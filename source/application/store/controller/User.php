@@ -2,8 +2,10 @@
 
 namespace app\store\controller;
 
+use app\common\model\UserAddress;
 use app\store\model\User as UserModel;
 use app\store\model\Level as LevelModel;
+use app\store\model\UserAddress as UserAddressModel;
 
 /**
  * 用户管理
@@ -34,7 +36,12 @@ class User extends Controller
     {
         // 用户详情
         $model = UserModel::detail($user_id);
+        $invited_user = $model->invitedUser->nickName;
         $levels = LevelModel::getAll();
-        return $this->fetch('detail', compact('model', 'levels'));
+        $addresses = [];
+        foreach($model->address as $v) {
+            $addresses[] = UserAddress::detail($user_id, $v->address_id);
+        }
+        return $this->fetch('detail', compact('model', 'invited_user', 'levels', 'addresses'));
     }
 }

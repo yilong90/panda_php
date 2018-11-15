@@ -67,7 +67,7 @@
                                 <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">邀请人 </label>
                                 <div class="am-u-sm-9 am-u-end">
                                     <input disabled type="text" class="tpl-form-input" name="user[invited_by]"
-                                           value="<?= $model['invited_by'] ?>" required>
+                                           value="<?= $invited_user ?>" required>
                                 </div>
                             </div>
                             <div class="am-form-group">
@@ -82,6 +82,41 @@
                                         <?php endforeach; endif; ?>
                                     </select>
                                 </div>
+                            </div>
+
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">地址信息</div>
+                            </div>
+                            <div class="order-list am-scrollable-horizontal am-u-sm-12 am-margin-top-xs">
+                                <table width="100%" class="am-table am-table-centered
+                            am-text-nowrap am-margin-bottom-xs">
+                                    <thead>
+                                    <tr>
+                                        <th>收货人</th>
+                                        <th>电话</th>
+                                        <th>地区</th>
+                                        <th>详细地址</th>
+                                        <th>是否为默认地址</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php if ($addresses): foreach ($addresses as $add): ?>
+                                            <tr>
+                                                <td><?= $add['name'] ?></td>
+                                                <td><?= $add['phone'] ?></td>
+                                                <td><?= $add['region']['province'].'-'.$add['region']['city'].'-'.$add['region']['region'] ?></td>
+                                                <td><?= $add['detail'] ?></td>
+                                                <td>
+                                                    <?php if ($model['address_id'] == $add['address_id']): ?> 是
+                                                    <?php else: ?> 否
+                                                    <?php endif; ?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                        <?php endif; ?>
+                                        </tbody>
+                                    </table>
+
                             </div>
                             <div class="am-form-group">
                                 <div class="am-u-sm-9 am-u-sm-push-3 am-margin-top-lg">

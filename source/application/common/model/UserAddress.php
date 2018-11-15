@@ -32,4 +32,15 @@ class UserAddress extends BaseModel
         ];
     }
 
+    /**
+     * 收货地址详情
+     * @param $user_id
+     * @param $address_id
+     * @return null|static
+     * @throws \think\exception\DbException
+     */
+    public static function detail($user_id, $address_id)
+    {
+        return self::get(compact('user_id', 'address_id'));
+    }
 }
