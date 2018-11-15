@@ -134,13 +134,13 @@
                                     <tbody>
                                     <?php if ($members): foreach ($members as $member): ?>
                                         <tr>
-                                            <td>
+                                            <td class="am-text-middle">
                                                 <a href="<?= url('user/edit', ['user_id' => $member['user_id']]) ?>">
                                                     <?= $member['nickName'] ?>
                                                 </a>
                                             </td>
                                             <td><img src="<?= $member['avatarUrl'] ?>" width="35" height="35" alt=""></td>
-                                            <td><?= $member['phone_number'] ?></td>
+                                            <td class="am-text-middle"><?= $member['phone_number'] ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                     <?php endif; ?>
