@@ -87,66 +87,62 @@
                             <div class="widget-head am-cf">
                                 <div class="widget-title am-fl">地址信息</div>
                             </div>
-                            <div class="order-list am-scrollable-horizontal am-u-sm-12 am-margin-top-xs">
-                                <table width="100%" class="am-table am-table-centered
-                            am-text-nowrap am-margin-bottom-xs">
-                                    <thead>
-                                    <tr>
-                                        <th>收货人</th>
-                                        <th>电话</th>
-                                        <th>地区</th>
-                                        <th>详细地址</th>
-                                        <th>是否为默认地址</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php if ($addresses): foreach ($addresses as $add): ?>
-                                            <tr>
-                                                <td><?= $add['name'] ?></td>
-                                                <td><?= $add['phone'] ?></td>
-                                                <td><?= $add['region']['province'].'-'.$add['region']['city'].'-'.$add['region']['region'] ?></td>
-                                                <td><?= $add['detail'] ?></td>
-                                                <td>
-                                                    <?php if ($model['address_id'] == $add['address_id']): ?> 是
-                                                    <?php else: ?> 否
-                                                    <?php endif; ?>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                        <?php endif; ?>
-                                        </tbody>
-                                    </table>
-                            </div>
+                            <table width="100%" class="am-table am-table-bordered am-table-striped am-table-hover am-table-centered">
+                                <thead>
+                                <tr>
+                                    <th>收货人</th>
+                                    <th>电话</th>
+                                    <th>地区</th>
+                                    <th>详细地址</th>
+                                    <th>是否为默认地址</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if ($addresses): foreach ($addresses as $add): ?>
+                                        <tr>
+                                            <td><?= $add['name'] ?></td>
+                                            <td><?= $add['phone'] ?></td>
+                                            <td><?= $add['region']['province'].'-'.$add['region']['city'].'-'.$add['region']['region'] ?></td>
+                                            <td><?= $add['detail'] ?></td>
+                                            <td>
+                                                <?php if ($model['address_id'] == $add['address_id']): ?> 是
+                                                <?php else: ?> 否
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
 
                             <div class="widget-head am-cf">
                                 <div class="widget-title am-fl">团队信息</div>
                             </div>
-                            <div class="order-list am-scrollable-horizontal am-u-sm-12 am-margin-top-xs">
-                                <table width="100%" class="am-table am-table-centered
-                            am-text-nowrap am-margin-bottom-xs">
-                                    <thead>
+
+                            <table width="100%" class="am-table am-table-bordered am-table-striped am-table-hover am-table-centered">
+                                <thead>
+                                <tr>
+                                    <th>昵称</th>
+                                    <th>头像</th>
+                                    <th>电话</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php if ($members): foreach ($members as $member): ?>
                                     <tr>
-                                        <th>昵称</th>
-                                        <th>头像</th>
-                                        <th>电话</th>
+                                        <td class="am-text-middle">
+                                            <a href="<?= url('user/edit', ['user_id' => $member['user_id']]) ?>">
+                                                <?= $member['nickName'] ?>
+                                            </a>
+                                        </td>
+                                        <td><img src="<?= $member['avatarUrl'] ?>" width="35" height="35" alt=""></td>
+                                        <td class="am-text-middle"><?= $member['phone_number'] ?></td>
                                     </tr>
-                                    </thead>
-                                    <tbody>
-                                    <?php if ($members): foreach ($members as $member): ?>
-                                        <tr>
-                                            <td class="am-text-middle">
-                                                <a href="<?= url('user/edit', ['user_id' => $member['user_id']]) ?>">
-                                                    <?= $member['nickName'] ?>
-                                                </a>
-                                            </td>
-                                            <td><img src="<?= $member['avatarUrl'] ?>" width="35" height="35" alt=""></td>
-                                            <td class="am-text-middle"><?= $member['phone_number'] ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                    <?php endif; ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                                <?php endforeach; ?>
+                                <?php endif; ?>
+                                </tbody>
+                            </table>
+
 
                             <div class="am-form-group">
                                 <div class="am-u-sm-9 am-u-sm-push-3 am-margin-top-lg">
