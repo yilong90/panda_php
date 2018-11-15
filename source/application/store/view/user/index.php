@@ -19,6 +19,8 @@
                                 <th>省份</th>
                                 <th>城市</th>
                                 <th>注册时间</th>
+                                <th>用户等级</th>
+                                <th>操作</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -36,6 +38,15 @@
                                     <td class="am-text-middle"><?= $item['province'] ?: '--' ?></td>
                                     <td class="am-text-middle"><?= $item['city'] ?: '--' ?></td>
                                     <td class="am-text-middle"><?= $item['create_time'] ?></td>
+                                    <td class="am-text-middle"><?= $item['level']['level'] ?></td>
+                                    <td class="am-text-middle">
+                                        <div class="tpl-table-black-operation">
+                                            <a href="<?= url('user/detail',
+                                                ['user_id' => $item['user_id']]) ?>">
+                                                <i class="am-icon-pencil"></i> 编辑
+                                            </a>
+                                        </div>
+                                    </td>
                                 </tr>
                             <?php endforeach; else: ?>
                                 <tr>
@@ -56,6 +67,18 @@
         </div>
     </div>
 </div>
+
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="doc-modal-1">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd">修改等级
+            <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+        </div>
+        <div class="am-modal-bd">
+            当前用户等级：
+        </div>
+    </div>
+</div>
+
 <script>
     $(function () {
 
