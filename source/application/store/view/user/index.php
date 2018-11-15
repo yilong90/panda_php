@@ -41,7 +41,7 @@
                                     <td class="am-text-middle"><?= $item['level']['level'] ?></td>
                                     <td class="am-text-middle">
                                         <div class="tpl-table-black-operation">
-                                            <a href="<?= url('user/detail',
+                                            <a href="<?= url('user/edit',
                                                 ['user_id' => $item['user_id']]) ?>">
                                                 <i class="am-icon-pencil"></i> 编辑
                                             </a>

@@ -73,10 +73,10 @@
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">等级 </label>
                                 <div class="am-u-sm-9 am-u-end">
-                                    <select name="user[level]"
+                                    <select name="user[level_id]"
                                             data-am-selected="{searchBox: 1, btnSize: 'sm'}">
                                         <?php if (isset($levels)): foreach ($levels as $key=>$value): ?>
-                                            <option value="<?= $key ?>"
+                                            <option value="<?= $value['level_id'] ?>"
                                                 <?= $model['level']['level'] == $value['level'] ? 'selected' : '' ?>>
                                                 <?= $value['level'] ?></option>
                                         <?php endforeach; endif; ?>
@@ -134,6 +134,10 @@
 
 <script>
     $(function () {
-
+        /**
+         * 表单验证提交
+         * @type {*}
+         */
+        $('#my-form').superForm();
     });
 </script>

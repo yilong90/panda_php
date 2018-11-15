@@ -27,21 +27,29 @@ class User extends Controller
     }
 
     /**
-     * 用户详情
+     * 用户编辑
      * @param $user_id
      * @return array|mixed
      * @throws \think\exception\DbException
      */
-    public function detail($user_id)
+    public function edit($user_id)
     {
         // 用户详情
         $model = UserModel::detail($user_id);
-        $invited_user = $model->invitedUser->nickName;
-        $levels = LevelModel::getAll();
-        $addresses = [];
-        foreach($model->address as $v) {
-            $addresses[] = UserAddress::detail($user_id, $v->address_id);
+        if (!$this->request->isAjax()) {
+            $invited_user = $model->invitedUser->nickName;
+            $levels = LevelModel::getAll();
+            $addresses = [];
+            foreach ($model->address as $v) {
+                $addresses[] = UserAddress::detail($user_id, $v->address_id);
+            }
+            return $this->fetch('edit', compact('model', 'invited_user', 'levels', 'addresses'));
         }
-        return $this->fetch('detail', compact('model', 'invited_user', 'levels', 'addresses'));
+        // 更新记录
+        if ($model->edit($this->postData('user'))) {
+            return $this->renderSuccess('更新成功', url('user/edit', ['user_id' => $user_id]));
+        }
+        $error = $model->getError() ?: '更新失败';
+        return $this->renderError($error);
     }
 }
