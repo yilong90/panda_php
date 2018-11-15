@@ -15,7 +15,6 @@ class User extends BaseModel
 
     // 性别
     private $gender = ['未知', '男', '女'];
-    private $levels = [];
     /**
      * 关联收货地址表
      * @return \think\model\relation\HasMany
@@ -74,6 +73,6 @@ class User extends BaseModel
      */
     public static function detail($where)
     {
-        return self::get($where, ['address', 'addressDefault', 'level', 'invitedUser']);
+        return self::get($where, ['level', 'invitedUser', 'addressDefault', 'address']);
     }
 }
