@@ -65,6 +65,13 @@ class User extends BaseModel
             ->paginate(15, false, ['query' => $request->request()]);
     }
 
+
+
+    public function getTeamMember($user_id)
+    {
+        return $this->where('user_id', '=', $user_id)->field('user_id,nickName,phone_number,avatarUrl')->select();
+    }
+
     /**
      * 获取用户信息
      * @param $where

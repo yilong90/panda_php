@@ -16,16 +16,16 @@
                                 </div>
                             </div>
                             <div class="am-form-group">
-                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">用户头像 </label>
-                                <div class="am-u-sm-9 am-u-end">
-                                    <img src="<?= $model['avatarUrl'] ?>" width="72" height="72" alt="">
-                                </div>
-                            </div>
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">用户名称 </label>
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">昵称 </label>
                                 <div class="am-u-sm-9 am-u-end">
                                     <input disabled type="text" class="tpl-form-input" name="user[nickName]"
                                            value="<?= $model['nickName'] ?>" required>
+                                </div>
+                            </div>
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">头像 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <img src="<?= $model['avatarUrl'] ?>" width="72" height="72" alt="">
                                 </div>
                             </div>
                             <div class="am-form-group">
@@ -116,8 +116,38 @@
                                         <?php endif; ?>
                                         </tbody>
                                     </table>
-
                             </div>
+
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">团队信息</div>
+                            </div>
+                            <div class="order-list am-scrollable-horizontal am-u-sm-12 am-margin-top-xs">
+                                <table width="100%" class="am-table am-table-centered
+                            am-text-nowrap am-margin-bottom-xs">
+                                    <thead>
+                                    <tr>
+                                        <th>昵称</th>
+                                        <th>头像</th>
+                                        <th>电话</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php if ($members): foreach ($members as $member): ?>
+                                        <tr>
+                                            <td>
+                                                <a href="<?= url('user/edit', ['user_id' => $member['user_id']]) ?>">
+                                                    <?= $member['nickName'] ?>
+                                                </a>
+                                            </td>
+                                            <td><img src="<?= $member['avatarUrl'] ?>" width="35" height="35" alt=""></td>
+                                            <td><?= $member['phone_number'] ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                    <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+
                             <div class="am-form-group">
                                 <div class="am-u-sm-9 am-u-sm-push-3 am-margin-top-lg">
                                     <button type="submit" class="j-submit am-btn am-btn-secondary">提交

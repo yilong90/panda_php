@@ -43,7 +43,8 @@ class User extends Controller
             foreach ($model->address as $v) {
                 $addresses[] = UserAddress::detail($user_id, $v->address_id);
             }
-            return $this->fetch('edit', compact('model', 'invited_user', 'levels', 'addresses'));
+            $members = $model->getTeamMember($user_id);
+            return $this->fetch('edit', compact('model', 'invited_user', 'levels', 'addresses', 'members'));
         }
         // 更新记录
         if ($model->edit($this->postData('user'))) {
