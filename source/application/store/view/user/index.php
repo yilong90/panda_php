@@ -3,18 +3,22 @@
         <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
 
             <div class="widget am-cf">
-                <form id="my-form" class="am-form tpl-form-line-form"  method="post">
-<!--                    <div class="am-g">-->
-                        <div class="am-u-sm-3 am-u-md-3 am-u-lg-3 am-u-sm-offset-9">
-                            <div class="am-input-group">
-                                <input type="text" class="am-form-field" name="search" placeholder="可按照昵称，电话查询">
-                                  <span class="am-input-group-btn">
-                                    <button class="am-btn am-btn-xs" type="submit button"><span class="am-icon-search"></span></button>
-                                  </span>
-                            </div>
-                        </div>
-<!--                    </div>-->
-                </form>
+<!--                <form id="my-form" class="am-form tpl-form-line-form"  method="get">-->
+<!--                        <div class="am-u-sm-3 am-u-md-3 am-u-lg-3 am-u-sm-offset-9">-->
+<!--                            <div class="am-input-group">-->
+<!--                                <input type="text" class="am-form-field" name="search" placeholder="可按照昵称，电话查询">-->
+<!--                                  <span class="am-input-group-btn">-->
+<!--                                    <button class="am-btn am-btn-xs" type="submit button"><span class="am-icon-search"></span></button>-->
+<!--                                  </span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                </form>-->
+                <div class="am-input-group am-u-sm-3 am-u-md-3 am-u-lg-3 am-u-sm-offset-9">
+                    <input type="text" class="am-form-field" placeholder="可按照昵称，电话查询">
+                      <span class="am-input-group-btn">
+                        <a id='search' href="<?= url('user/index', ['search'=>'']) ?>" class="am-btn am-btn-default" type="button"><span class="am-icon-search"></span></a>
+                      </span>
+                </div>
                 <div class="widget-head am-cf">
                     <div class="widget-title am-cf">用户列表</div>
                 </div>
@@ -65,13 +69,13 @@
                             </tbody>
                         </table>
                     </div>
-                    <?php if(!isset($_POST['search'])): ?>
-                    <div class="am-u-lg-12 am-cf">
-                        <div class="am-fr"><?= $list->render() ?> </div>
-                        <div class="am-fr pagination-total am-margin-right">
-                            <div class="am-vertical-align-middle">总记录：<?= $list->total() ?></div>
+                    <?php if(!strpos($_SERVER['QUERY_STRING'], 'search')): ?>
+                        <div class="am-u-lg-12 am-cf">
+                            <div class="am-fr"><?= $list->render() ?> </div>
+                            <div class="am-fr pagination-total am-margin-right">
+                                <div class="am-vertical-align-middle">总记录：<?= $list->total() ?></div>
+                            </div>
                         </div>
-                    </div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -80,8 +84,14 @@
 </div>
 
 <script>
+    $('.am-form-field').css('border', '1px solid #c2cad8')
     $(function () {
-//        $('#my-form').superForm();
+        $("#search").click(
+            function()
+            {
+                $(this).attr('href', $(this).attr('href') + '/search/' + $('input')[0].value);
+            }
+        )
     });
 </script>
 
