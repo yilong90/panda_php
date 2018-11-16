@@ -81,7 +81,11 @@
                                                 <?= $value['level'] ?></option>
                                         <?php endforeach; endif; ?>
                                     </select>
+                                    <button type="submit" class="j-submit am-btn am-btn-secondary">提交
+                                    </button>
                                 </div>
+
+
                             </div>
 
                             <div class="widget-head am-cf">
@@ -142,14 +146,6 @@
                                 <?php endif; ?>
                                 </tbody>
                             </table>
-
-
-                            <div class="am-form-group">
-                                <div class="am-u-sm-9 am-u-sm-push-3 am-margin-top-lg">
-                                    <button type="submit" class="j-submit am-btn am-btn-secondary">提交
-                                    </button>
-                                </div>
-                            </div>
                         </fieldset>
                     </div>
                 </form>

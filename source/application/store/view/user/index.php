@@ -16,7 +16,7 @@
                 <div class="am-input-group am-u-sm-3 am-u-md-3 am-u-lg-3 am-u-sm-offset-9">
                     <input type="text" class="am-form-field" placeholder="可按照昵称，电话查询">
                       <span class="am-input-group-btn">
-                        <a id='search' href="<?= url('user/index', ['search'=>'']) ?>" class="am-btn am-btn-default" type="button"><span class="am-icon-search"></span></a>
+                        <a id='search' href="<?= url('user/index', ['search'=>'']) ?>" class="am-btn am-btn-sm" type="button"><span class="am-icon-search"></span></a>
                       </span>
                 </div>
                 <div class="widget-head am-cf">
@@ -56,7 +56,7 @@
                                         <div class="tpl-table-black-operation">
                                             <a href="<?= url('user/edit',
                                                 ['user_id' => $item['user_id']]) ?>">
-                                                <i class="am-icon-pencil"></i> 详情
+                                                <i class="am-icon-info"></i> 详情
                                             </a>
                                         </div>
                                     </td>
