@@ -35,15 +35,6 @@ class User extends BaseModel
     }
 
     /**
-     * 关联收货地址表 (默认地址)
-     * @return \think\model\relation\BelongsTo
-     */
-    public function addressDefault()
-    {
-        return $this->belongsTo('UserAddress', 'address_id');
-    }
-
-    /**
      * 关联级别表
      * @return \think\model\relation\BelongsTo
      */
@@ -54,11 +45,11 @@ class User extends BaseModel
 
     /**
     * 关联自身
-    * @return \think\model\relation\HasOne
+    * @return \think\model\relation\BelongsTo
     */
     public function invitedUser()
     {
-        return $this->hasOne('User', 'invited_by');
+        return $this->belongsTo('User', 'invited_by');
     }
 
     /**
@@ -91,6 +82,6 @@ class User extends BaseModel
      */
     public static function detail($where)
     {
-        return self::get($where, ['level', 'invitedUser', 'addressDefault', 'address']);
+        return self::get($where);
     }
 }

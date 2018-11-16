@@ -116,7 +116,7 @@
                             </table>
 
                             <div class="widget-head am-cf">
-                                <div class="widget-title am-fl">团队信息</div>
+                                <div class="widget-title am-fl">下线列表</div>
                             </div>
 
                             <table width="100%" class="am-table am-table-bordered am-table-striped am-table-hover am-table-centered">
