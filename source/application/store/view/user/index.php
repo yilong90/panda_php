@@ -79,17 +79,6 @@
     </div>
 </div>
 
-<div class="am-modal am-modal-no-btn" tabindex="-1" id="doc-modal-1">
-    <div class="am-modal-dialog">
-        <div class="am-modal-hd">修改等级
-            <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
-        </div>
-        <div class="am-modal-bd">
-            当前用户等级：
-        </div>
-    </div>
-</div>
-
 <script>
     $(function () {
 //        $('#my-form').superForm();
