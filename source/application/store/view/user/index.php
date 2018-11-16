@@ -43,7 +43,7 @@
                                         <div class="tpl-table-black-operation">
                                             <a href="<?= url('user/edit',
                                                 ['user_id' => $item['user_id']]) ?>">
-                                                <i class="am-icon-pencil"></i> 编辑
+                                                <i class="am-icon-pencil"></i> 详情
                                             </a>
                                         </div>
                                     </td>
