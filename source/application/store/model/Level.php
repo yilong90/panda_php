@@ -16,4 +16,14 @@ class Level extends LevelModel
         $model = new static;
         return $model->select();
     }
+
+    /**
+     * 编辑记录
+     * @param $data
+     * @return bool|int
+     */
+    public function edit($data)
+    {
+        return $this->allowField('level')->save($data);
+    }
 }

@@ -74,6 +74,24 @@ return [
         'name' => '用户管理',
         'icon' => 'icon-user',
         'index' => 'user/index',
+        'submenu' => [
+            [
+                'name' => '用户列表',
+                'index' => 'user/index',
+                'uris' => [
+                    'user/index',
+                    'user/edit'
+                ]
+            ],
+            [
+                'name' => '等级管理',
+                'index' => 'user.level/index',
+                'uris' => [
+                    'user.level/index',
+                    'user.level/edit'
+                ]
+            ],
+        ]
     ],
 //    'marketing' => [
 //        'name' => '营销管理',
