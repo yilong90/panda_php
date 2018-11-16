@@ -2,10 +2,8 @@
 
 namespace app\store\controller;
 
-use app\common\model\UserAddress;
 use app\store\model\User as UserModel;
 use app\store\model\Level as LevelModel;
-use app\store\model\UserAddress as UserAddressModel;
 
 /**
  * 用户管理

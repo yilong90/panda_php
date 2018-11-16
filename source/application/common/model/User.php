@@ -70,6 +70,10 @@ class User extends BaseModel
     public function getList()
     {
         $request = Request::instance();
+        if($search = trim($request->post('search'))) {
+            return $this->where('nickName like :nickName OR phone_number = :phone_number ',
+                ['nickName'=>"%{$search}%", 'phone_number'=>$search])->select();
+        }
         return $this->order(['create_time' => 'desc'])
             ->paginate(15, false, ['query' => $request->request()]);
     }
