@@ -11,5 +11,8 @@ use think\Request;
  */
 class Level extends BaseModel
 {
-
+    public function user()
+    {
+        return $this->hasMany('User', 'level_id');
+    }
 }

@@ -15,6 +15,7 @@ class User extends BaseModel
 
     // 性别
     private $gender = ['未知', '男', '女'];
+
     /**
      * 关联收货地址表
      * @return \think\model\relation\HasMany
@@ -22,6 +23,15 @@ class User extends BaseModel
     public function address()
     {
         return $this->hasMany('UserAddress');
+    }
+
+    /**
+     * 关联自身
+     * @return \think\model\relation\HasMany
+     */
+    public function member()
+    {
+        return $this->hasMany('User', 'invited_by');
     }
 
     /**
@@ -33,14 +43,22 @@ class User extends BaseModel
         return $this->belongsTo('UserAddress', 'address_id');
     }
 
+    /**
+     * 关联级别表
+     * @return \think\model\relation\BelongsTo
+     */
     public function level()
     {
         return $this->belongsTo('Level', 'level_id');
     }
 
+    /**
+    * 关联自身
+    * @return \think\model\relation\HasOne
+    */
     public function invitedUser()
     {
-        return $this->hasOne('User')->field('user_id,nickName');
+        return $this->hasOne('User', 'invited_by');
     }
 
     /**
@@ -63,13 +81,6 @@ class User extends BaseModel
         $request = Request::instance();
         return $this->order(['create_time' => 'desc'])
             ->paginate(15, false, ['query' => $request->request()]);
-    }
-
-
-
-    public function getTeamMember($user_id)
-    {
-        return $this->where('user_id', '=', $user_id)->field('user_id,nickName,phone_number,avatarUrl')->select();
     }
 
     /**

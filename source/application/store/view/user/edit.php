@@ -67,7 +67,7 @@
                                 <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">邀请人 </label>
                                 <div class="am-u-sm-9 am-u-end">
                                     <input disabled type="text" class="tpl-form-input" name="user[invited_by]"
-                                           value="<?= $invited_user ?>" required>
+                                           value="<?= $model['invited_user']['nickName'] ?>" required>
                                 </div>
                             </div>
                             <div class="am-form-group">
@@ -98,7 +98,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if ($addresses): foreach ($addresses as $add): ?>
+                                    <?php if ($model['address']): foreach ($model['address'] as $add): ?>
                                         <tr>
                                             <td><?= $add['name'] ?></td>
                                             <td><?= $add['phone'] ?></td>
@@ -128,7 +128,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <?php if ($members): foreach ($members as $member): ?>
+                                <?php if ($model['member']): foreach ($model['member'] as $member): ?>
                                     <tr>
                                         <td class="am-text-middle">
                                             <a href="<?= url('user/edit', ['user_id' => $member['user_id']]) ?>">

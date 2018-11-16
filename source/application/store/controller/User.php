@@ -37,14 +37,8 @@ class User extends Controller
         // 用户详情
         $model = UserModel::detail($user_id);
         if (!$this->request->isAjax()) {
-            $invited_user = $model->invitedUser->nickName;
             $levels = LevelModel::getAll();
-            $addresses = [];
-            foreach ($model->address as $v) {
-                $addresses[] = UserAddress::detail($user_id, $v->address_id);
-            }
-            $members = $model->getTeamMember($user_id);
-            return $this->fetch('edit', compact('model', 'invited_user', 'levels', 'addresses', 'members'));
+            return $this->fetch('edit', compact('model', 'levels'));
         }
         // 更新记录
         if ($model->edit($this->postData('user'))) {
