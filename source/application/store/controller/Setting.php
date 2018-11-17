@@ -18,7 +18,7 @@ class Setting extends Controller
     {
         parent::__construct();
         $user = Session::get('panda_store.user');
-        if($user['user_name'] == 'admin') {
+        if($user['user_name'] != 'admin') {
             $this->redirect('index/index');
         }
     }
