@@ -66,8 +66,13 @@
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">上级 </label>
                                 <div class="am-u-sm-9 am-u-end">
-                                    <input disabled type="text" class="tpl-form-input" name="user[invited_by]"
-                                           value="<?= $model['invited_user']['nickName'] ?>" required>
+                                    <?php if($model['invited_user']['nickName']): ?>
+                                        <input disabled type="text" class="tpl-form-input" name="user[invited_by]"
+                                               value="<?= $model['invited_user']['nickName'] ?>" required>
+                                    <?php else: ?>
+                                        <input disabled type="text" class="tpl-form-input" name="user[invited_by]"
+                                               value="无" required>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="am-form-group">
@@ -129,6 +134,7 @@
                                     <th>昵称</th>
                                     <th>头像</th>
                                     <th>电话</th>
+                                    <th>上级</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -141,6 +147,11 @@
                                         </td>
                                         <td><img src="<?= $member['avatarUrl'] ?>" width="35" height="35" alt=""></td>
                                         <td class="am-text-middle"><?= $member['phone_number'] ?></td>
+                                        <td class="am-text-middle">
+                                            <a href="<?= url('user/edit', ['user_id' => $member['invited_by']]) ?>">
+                                                <?= $member['invited_user']['nickName'] ?>
+                                            </a>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                                 <?php endif; ?>

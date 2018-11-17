@@ -35,15 +35,6 @@ class User extends BaseModel
     }
 
     /**
-     * 关联自身
-     * @return \think\model\relation\HasMany
-     */
-    public function member()
-    {
-        return $this->hasMany('User', 'invited_by');
-    }
-
-    /**
      * 关联级别表
      * @return \think\model\relation\BelongsTo
      */
@@ -85,6 +76,12 @@ class User extends BaseModel
         }
         return $this->order(['create_time' => 'desc'])
             ->paginate(15, false, ['query' => $request->request()]);
+    }
+
+    public function getMember($user_id)
+    {
+        return $this->where("path like (select concat(path,',',user_id,'%') as path from panda_user where user_id= :user_id)",
+            ['user_id'=>$user_id])->select();
     }
 
     /**

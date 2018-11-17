@@ -36,7 +36,8 @@ class User extends Controller
         $model = UserModel::detail($user_id);
         if (!$this->request->isAjax()) {
             $levels = LevelModel::getAll();
-            return $this->fetch('edit', compact('model', 'levels'));
+            $members = $model->getMember($user_id);
+            return $this->fetch('edit', compact('model', 'levels', 'members'));
         }
         // 更新记录
         if ($model->edit($this->postData('user'))) {
