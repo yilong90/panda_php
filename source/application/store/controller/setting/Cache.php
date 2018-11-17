@@ -3,6 +3,7 @@
 namespace app\store\controller\setting;
 
 use app\store\controller\Controller;
+use app\store\controller\Setting;
 use think\Cache as Driver;
 
 /**
@@ -10,7 +11,7 @@ use think\Cache as Driver;
  * Class Index
  * @package app\store\controller
  */
-class Cache extends Controller
+class Cache extends Setting
 {
     /**
      * 清理缓存

@@ -3,6 +3,7 @@
 namespace app\store\controller\setting;
 
 use app\store\controller\Controller;
+use app\store\controller\Setting;
 use app\store\model\StoreUser as StoreUserModel;
 
 /**
@@ -10,7 +11,7 @@ use app\store\model\StoreUser as StoreUserModel;
  * Class StoreUser
  * @package app\store\controller
  */
-class User extends Controller
+class User extends Setting
 {
 
     public function index()

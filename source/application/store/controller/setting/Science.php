@@ -3,13 +3,14 @@
 namespace app\store\controller\setting;
 
 use app\store\controller\Controller;
+use app\store\controller\Setting;
 
 /**
  * 环境检测
  * Class Science
  * @package app\store\controller\setting
  */
-class Science extends Controller
+class Science extends Setting
 {
     /**
      * 状态class

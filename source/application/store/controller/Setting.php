@@ -19,7 +19,7 @@ class Setting extends Controller
         parent::__construct();
         $user = Session::get('panda_store.user');
         if($user['user_name'] != 'admin') {
-            $this->redirect('index/index');
+            $this->error('您没有权限使用该模块', 'index/index');
         }
     }
 

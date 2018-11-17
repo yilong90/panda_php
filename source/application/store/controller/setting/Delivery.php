@@ -3,6 +3,7 @@
 namespace app\store\controller\setting;
 
 use app\store\controller\Controller;
+use app\store\controller\Setting;
 use app\store\model\Region;
 use app\store\model\Delivery as DeliveryModel;
 
@@ -11,7 +12,7 @@ use app\store\model\Delivery as DeliveryModel;
  * Class Delivery
  * @package app\store\controller\setting
  */
-class Delivery extends Controller
+class Delivery extends Setting
 {
     /**
      * 配送模板列表
