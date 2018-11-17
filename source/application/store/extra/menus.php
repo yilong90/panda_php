@@ -177,6 +177,16 @@ return [
                 'index' => 'setting/storage',
             ],
             [
+                'name' => '后台用户',
+                'index' => 'setting.user/index',
+                'uris' => [
+                    'setting.user/index',
+                    'setting.user/add',
+                    'setting.user/edit',
+                    'setting.user/delete',
+                ],
+            ],
+            [
                 'name' => '其他',
                 'active' => true,
                 'submenu' => [

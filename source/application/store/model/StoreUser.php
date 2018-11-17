@@ -84,4 +84,35 @@ class StoreUser extends StoreUserModel
         return true;
     }
 
+    public function getList()
+    {
+        return $this->order(['create_time' => 'desc'])->select();
+    }
+
+    public function add($data)
+    {
+        if ($data['password'] !== $data['password_confirm']) {
+            $this->error = '确认密码不正确';
+            return false;
+        }
+        if ($this->save([
+                'wxapp_id' => self::$wxapp_id,
+                'user_name' => $data['user_name'],
+                'password' => panda_hash($data['password']),
+            ]) === false) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 删除记录
+     * @return int
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function remove()
+    {
+        return $this->delete();
+    }
 }

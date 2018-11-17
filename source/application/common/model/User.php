@@ -26,6 +26,15 @@ class User extends BaseModel
     }
 
     /**
+     * 关联收货地址表 (默认地址)
+     * @return \think\model\relation\BelongsTo
+     */
+    public function addressDefault()
+    {
+        return $this->belongsTo('UserAddress', 'address_id');
+    }
+
+    /**
      * 关联自身
      * @return \think\model\relation\HasMany
      */

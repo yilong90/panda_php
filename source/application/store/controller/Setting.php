@@ -4,6 +4,7 @@ namespace app\store\controller;
 
 use app\common\library\sms\Driver as SmsDriver;
 use app\store\model\Setting as SettingModel;
+use think\Session;
 
 /**
  * 系统设置
@@ -12,6 +13,16 @@ use app\store\model\Setting as SettingModel;
  */
 class Setting extends Controller
 {
+    //非admin用户禁止登陆
+    public function __construct()
+    {
+        parent::__construct();
+        $user = Session::get('panda_store.user');
+        if($user['user_name'] == 'admin') {
+            $this->redirect('index/index');
+        }
+    }
+
     /**
      * 商城设置
      * @return mixed
