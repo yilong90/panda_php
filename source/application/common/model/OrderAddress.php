@@ -33,4 +33,14 @@ class OrderAddress extends BaseModel
         ];
     }
 
+    /**
+     * 编辑记录
+     * @param $data
+     * @return bool|int
+     */
+    public function edit($data)
+    {
+        return $this->allowField(true)->save($data);
+    }
+
 }

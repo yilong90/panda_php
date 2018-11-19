@@ -150,6 +150,9 @@
                                 <th>收货人</th>
                                 <th>收货电话</th>
                                 <th>收货地址</th>
+                                <?php if($detail['pay_status']['value'] == 20 && $detail['delivery_status']['value'] == 10): ?>
+                                    <td>操作</td>
+                                <?php endif; ?>
                             </tr>
                             <tr>
                                 <td><?= $detail['address']['name'] ?></td>
@@ -160,6 +163,15 @@
                                     <?= $detail['address']['region']['region'] ?>
                                     <?= $detail['address']['detail'] ?>
                                 </td>
+                                <?php if($detail['pay_status']['value'] == 20 && $detail['delivery_status']['value'] == 10): ?>
+                                    <td>
+                                        <div class="tpl-table-black-operation">
+                                            <a id='my-modal' data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 0, width: 600, height: 500}">
+                                                <i class="am-icon-pencil"></i> 编辑
+                                            </a>
+                                        </div>
+                                    </td>
+                                <?php endif; ?>
                             </tr>
                             </tbody>
                         </table>
@@ -262,14 +274,136 @@
         </div>
     </div>
 </div>
+
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="doc-modal-1">
+    <div class="am-modal-dialog">
+        <div class="am-modal-hd"> 修改订单地址
+            <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+        </div>
+        <div class="row-content am-cf">
+            <div class="row">
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                    <div class="widget am-cf">
+                        <form id="my-form" action="<?= url('store/order/edit_address', ['order_address_id'=>$detail['address']['order_address_id']]) ?>" class="am-form tpl-form-line-form" method="post">
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">收货人 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <input type="text" class="tpl-form-input" name="address[name]"
+                                           value="<?= $detail['address']['name']; ?>" required>
+                                </div>
+                            </div>
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">收货电话 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <input type="text" class="tpl-form-input" name="address[phone]"
+                                           value="<?= $detail['address']['phone']; ?>" required>
+                                </div>
+                            </div>
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">省份 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <select id='province' name="address[province_id]"
+                                            data-am-selected="{searchBox: 1, btnSize: 'sm'}">
+
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">城市 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <select id='city' name="address[city_id]"
+                                            data-am-selected="{searchBox: 1, btnSize: 'sm'}">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">地区 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <select id='region' name="address[region_id]"
+                                            data-am-selected="{searchBox: 1, btnSize: 'sm'}">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">详细地址 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <input type="text" name="address[detail]"
+                                           value="<?= $detail['address']['detail'] ?>" required>
+                                </div>
+                            </div>
+                            <div class="am-form-group">
+                                <div class="am-u-sm-9 am-u-sm-push-3 am-margin-top-lg">
+                                    <button type="submit" class="j-submit am-btn am-btn-secondary">提交
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
     $(function () {
-
         /**
          * 表单验证提交
          * @type {*}
          */
-        $('.my-form').superForm();
+        var getProvinceUrl = '<?= url('region/get_region'); ?>';
+        getOptions(getProvinceUrl, <?= $detail['address']['province_id']; ?>, 'province');
+
+        var getCityUrl = '<?= url('region/get_region', ['province_id'=>$detail['address']['province_id']]); ?>';
+        getOptions(getCityUrl, <?= $detail['address']['city_id']; ?>, 'city');
+
+        var getRegionUrl = '<?= url('region/get_region',
+            ['province_id'=>$detail['address']['province_id'],'city_id'=>$detail['address']['city_id']]); ?>';
+        getOptions(getRegionUrl, <?= $detail['address']['region_id']; ?>, 'region');
+
+        $("#province").parent().click(function() {
+            $('#province').attr('select_by_user', true)
+        })
+
+        $("#city").parent().click(function() {
+            $('#city').attr('select_by_user', true)
+        })
+
+        $("#city").parent().click(function() {
+            var getRegionUrl = '<?= url('region/get_region'); ?>///province_id/' + $('#province').val() + '/city_id/' + $(this).val();
+            getOptions(getRegionUrl, '', 'region');
+        })
+        $("#province").change(function() {
+            if($(this).attr('select_by_user')) {
+                var getCityUrl = '<?= url('region/get_region'); ?>/province_id/' + $(this).val();
+                getOptions(getCityUrl, '', 'city');
+            }
+        })
+
+        $("#city").change(function() {
+            if($(this).attr('select_by_user')) {
+                var getRegionUrl = '<?= url('region/get_region'); ?>/province_id/' + $('#province').val() + '/city_id/' + $(this).val();
+                getOptions(getRegionUrl, '', 'region');
+            }
+        })
+
+
+        function getOptions(url, which_selected, select_id) {
+            var res = ''
+            $.get(url, function(result) {
+                result.forEach((function (item) {
+                    if(item.id == which_selected){
+                        res += "<option selected value='" + item.id + "'>" + item.name + "</option>"
+                    }
+                    else{
+                        res += "<option value='" + item.id + "'>" + item.name + "</option>"
+                    }
+                }))
+                $('#'+select_id).html(res);
+            })
+        }
+
+        $('#my-form').superForm();
 
     });
 </script>

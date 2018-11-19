@@ -2,6 +2,7 @@
 
 namespace app\store\controller;
 
+use app\common\model\OrderAddress;
 use app\store\model\Order as OrderModel;
 
 /**
@@ -120,4 +121,14 @@ class Order extends Controller
         return $this->renderError($error);
     }
 
+    public function edit_address($order_address_id)
+    {
+        // 更新记录
+        $model = OrderAddress::get($order_address_id);
+        if ($model->edit($this->postData('address'))) {
+            return $this->renderSuccess('更新成功');
+        }
+        $error = $model->getError() ?: '更新失败';
+        return $this->renderError($error);
+    }
 }

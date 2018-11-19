@@ -99,6 +99,22 @@ return [
 //        'index' => 'marketing/index',
 //        'submenu' => [],
 //    ],
+    'marketing' => [
+        'name' => '分销中心',
+        'icon' => 'am-icon-sitemap',
+        'index' => 'distribute/distributor',
+        'submenu' => [
+            [
+                'name' => '分销团队',
+                'index' => 'distribute/distributor',
+            ],
+            [
+                'name' => '分销订单',
+                'index' => 'distribute/order',
+            ],
+
+        ],
+    ],
     'wxapp' => [
         'name' => '小程序',
         'icon' => 'icon-wxapp',
