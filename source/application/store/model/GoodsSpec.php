@@ -64,8 +64,10 @@ class GoodsSpec extends GoodsSpecModel
     {
         $model = new GoodsSpecRel;
         $goodsPriceModel = new \app\common\model\GoodsPrice();
-        $res = $this::get($goods_id);
-        $goodsPriceModel->where('goods_spec_id', '=', $res['goods_spec_id'])->delete();
+        $res = $this::all(['goods_id'=>$goods_id]);
+        foreach($res as $r) {
+            $goodsPriceModel->where('goods_spec_id', '=', $r['goods_spec_id'])->delete();
+        }
         $model->where('goods_id','=', $goods_id)->delete();
         return $this->where('goods_id','=', $goods_id)->delete();
     }
