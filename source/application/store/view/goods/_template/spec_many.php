@@ -31,7 +31,9 @@
         <th>{{ $value.group_name }}</th>
         {{ /each }}
         <th>商家编码</th>
-        <th>销售价</th>
+        <?php if($levels): foreach($levels as $level): ?>
+            <th><?= $level['level'] ?>价</th>
+        <?php endforeach; endif;?>
         <th>划线价</th>
         <th>库存</th>
         <th>重量(kg)</th>
@@ -46,10 +48,13 @@
         <td>
             <input type="text" name="goods_no" value="{{ item.form.goods_no }}" class="ipt-goods-no am-field-valid">
         </td>
-        <td>
-            <input type="number" name="goods_price" value="{{ item.form.goods_price }}" class="am-field-valid ipt-w80"
-                   required>
-        </td>
+        <?php if($levels): foreach($levels as $level): ?>
+                    <td>
+                        <input type="number" name="price<?= $level['level_id']; ?>" value="" class="am-field-valid ipt-w80"
+                               required>
+                    </td>
+        <?php endforeach; ?>
+        <?php endif; ?>
         <td>
             <input type="number" name="line_price" value="{{ item.form.line_price }}" class="am-field-valid ipt-w80">
         </td>

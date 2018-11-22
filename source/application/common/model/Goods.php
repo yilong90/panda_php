@@ -61,6 +61,11 @@ class Goods extends BaseModel
         return $this->hasMany('GoodsImage')->order(['id' => 'asc']);
     }
 
+
+    public function price()
+    {
+        return $this->hasMany('GoodsPrice', 'goods_spec_id');
+    }
     /**
      * 关联运费模板表
      * @return \think\model\relation\BelongsTo

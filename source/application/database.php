@@ -3,6 +3,7 @@
 // 数据库配置
 $config = [
     'host' => '127.0.0.1',
+//    'host' => '129.28.68.169',
     'database' => 'pandashop',
     'username' => 'root',
     'password' => 'root',

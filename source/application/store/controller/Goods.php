@@ -2,6 +2,7 @@
 
 namespace app\store\controller;
 
+use app\store\model\Level;
 use app\store\model\Category;
 use app\store\model\Delivery;
 use app\store\model\Goods as GoodsModel;
@@ -36,7 +37,8 @@ class Goods extends Controller
             $catgory = Category::getCacheTree();
             // 配送模板
             $delivery = Delivery::getAll();
-            return $this->fetch('add', compact('catgory', 'delivery'));
+            $levels = Level::getAll();
+            return $this->fetch('add', compact('catgory', 'delivery', 'levels'));
         }
         $model = new GoodsModel;
         if ($model->add($this->postData('goods'))) {

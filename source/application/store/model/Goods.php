@@ -26,12 +26,13 @@ class Goods extends GoodsModel
         $data['content'] = isset($data['content']) ? $data['content'] : '';
         $data['wxapp_id'] = $data['spec']['wxapp_id'] = self::$wxapp_id;
 
-        // 开启事务
+//         开启事务
         Db::startTrans();
         try {
             // 添加商品
             $this->allowField(true)->save($data);
             // 商品规格
+//            $goods_spec = $this->addGoodsSpec($data);
             $this->addGoodsSpec($data);
             // 商品图片
             $this->addGoodsImages($data['images']);
@@ -41,6 +42,18 @@ class Goods extends GoodsModel
             Db::rollback();
         }
         return false;
+    }
+
+    private function addGoodsPrice($goods_spec, $price) {
+        $model = new GoodsPrice();
+        for($i=0; $i<count($goods_spec); $i++) {
+            $data = [];
+            foreach($price[$i] as $v) {
+               $v['goods_spec_id'] = $goods_spec[$i]['goods_spec_id'];
+               $data[] = $v;
+            }
+            $model->saveAll($data);
+        }
     }
 
     /**
@@ -106,13 +119,47 @@ class Goods extends GoodsModel
         $isUpdate && $model->removeAll($this['goods_id']);
         // 添加规格数据
         if ($data['spec_type'] == '10') {
+            $every_price = [];
+            foreach($data['spec']['goods_price'] as $k=>$p) {
+                $every_price[] = [
+                    'level_id'=>$k,
+                    'goods_price'=> $p,
+                    'wxapp_id' => self::$wxapp_id
+                ];
+            }
+            if(isset($data['spec']['goods_price']))
+                unset($data['spec']['goods_price']);
+
             // 单规格
             $this->spec()->save($data['spec']);
+            // 价格
+            $this->price()->saveAll($every_price);
+
         } else if ($data['spec_type'] == '20') {
+            $price = [];
+            if(isset($data['spec']['goods_price']))
+                unset($data['spec']['goods_price']);
+            $levels = Level::getAll();
+            foreach($data['spec_many']['spec_list'] as &$v) {
+                $every_price = [];
+                if(isset($v['form']['goods_price']))
+                    unset($v['form']['goods_price']);
+                foreach($levels as $level) {
+                    $every_price[] = [
+                        'level_id'=>$level['level_id'],
+                        'goods_price'=> $v['form']['price' . $level['level_id']],
+                        'wxapp_id' => self::$wxapp_id
+                    ];
+                    if(isset($v['form']['price' . $level['level_id']]))
+                        unset($v['form']['price' . $level['level_id']]);
+                }
+                $price[] = $every_price;
+            }
             // 添加商品与规格关系记录
             $model->addGoodsSpecRel($this['goods_id'], $data['spec_many']['spec_attr']);
             // 添加商品sku
-            $model->addSkuList($this['goods_id'], $data['spec_many']['spec_list']);
+            $res = $model->addSkuList($this['goods_id'], $data['spec_many']['spec_list']);
+            $this->addGoodsPrice($res, $price);
         }
     }
 

@@ -119,9 +119,9 @@
                                             <div class="am-form-group">
                                                 <input type="text" data-type="goods_no" placeholder="商家编码">
                                             </div>
-                                            <div class="am-form-group">
-                                                <input type="number" data-type="goods_price" placeholder="销售价">
-                                            </div>
+<!--                                            <div class="am-form-group">-->
+<!--                                                <input type="number" data-type="goods_price" placeholder="销售价">-->
+<!--                                            </div>-->
                                             <div class="am-form-group">
                                                 <input type="number" data-type="line_price" placeholder="划线价">
                                             </div>
@@ -152,13 +152,23 @@
                                                value="">
                                     </div>
                                 </div>
-                                <div class="am-form-group">
-                                    <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">商品价格 </label>
-                                    <div class="am-u-sm-9 am-u-end">
-                                        <input type="number" class="tpl-form-input" name="goods[spec][goods_price]"
-                                               required>
+<!--                                <div class="am-form-group">-->
+<!--                                    <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">商品价格 </label>-->
+<!--                                    <div class="am-u-sm-9 am-u-end">-->
+<!--                                        <input type="number" class="tpl-form-input" name="goods[spec][goods_price]"-->
+<!--                                               required>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+                                <?php if($levels): foreach($levels as $level): ?>
+                                    <div class="am-form-group">
+                                        <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require"><?= $level['level']; ?>价格 </label>
+                                        <div class="am-u-sm-9 am-u-end">
+                                            <input type="number" class="tpl-form-input" name="goods[spec][goods_price][<?= $level['level_id']; ?>]"
+                                                   required>
+                                        </div>
                                     </div>
-                                </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                                 <div class="am-form-group">
                                     <label class="am-u-sm-3 am-u-lg-2 am-form-label">商品划线价 </label>
                                     <div class="am-u-sm-9 am-u-end">
