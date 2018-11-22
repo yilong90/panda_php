@@ -2,6 +2,8 @@
 
 namespace app\store\controller;
 
+use app\common\model\GoodsPrice;
+use app\store\model\GoodsSpec;
 use app\store\model\Level;
 use app\store\model\Category;
 use app\store\model\Delivery;
@@ -82,7 +84,10 @@ class Goods extends Controller
             $specData = 'null';
             if ($model['spec_type'] == 20)
                 $specData = json_encode($model->getManySpecData($model['spec_rel'], $model['spec']));
-            return $this->fetch('edit', compact('model', 'catgory', 'delivery', 'specData'));
+            $levels = Level::getAll();
+            $resGoodsSpec = GoodsSpec::get(['goods_id' => $goods_id]);
+            $prices = GoodsPrice::all(['goods_spec_id'=>$resGoodsSpec['goods_spec_id']]);
+            return $this->fetch('edit', compact('model', 'catgory', 'delivery', 'specData', 'levels', 'prices'));
         }
         // 更新记录
         if ($model->edit($this->postData('goods'))) {

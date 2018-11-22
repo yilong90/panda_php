@@ -25,14 +25,12 @@ class Goods extends GoodsModel
         }
         $data['content'] = isset($data['content']) ? $data['content'] : '';
         $data['wxapp_id'] = $data['spec']['wxapp_id'] = self::$wxapp_id;
-
 //         开启事务
         Db::startTrans();
         try {
             // 添加商品
             $this->allowField(true)->save($data);
             // 商品规格
-//            $goods_spec = $this->addGoodsSpec($data);
             $this->addGoodsSpec($data);
             // 商品图片
             $this->addGoodsImages($data['images']);
@@ -120,21 +118,25 @@ class Goods extends GoodsModel
         // 添加规格数据
         if ($data['spec_type'] == '10') {
             $every_price = [];
-            foreach($data['spec']['goods_price'] as $k=>$p) {
+            if(isset($data['spec']['goods_price'])) {
+                $data_price = $data['spec']['goods_price'];
+                unset($data['spec']['goods_price']);
+            }
+            // 单规格
+            $res = $this->spec()->save($data['spec']);
+            foreach($data_price as $k=>$p) {
                 $every_price[] = [
                     'level_id'=>$k,
                     'goods_price'=> $p,
-                    'wxapp_id' => self::$wxapp_id
+                    'wxapp_id' => self::$wxapp_id,
+                    'goods_spec_id' => $res['goods_spec_id']
                 ];
             }
             if(isset($data['spec']['goods_price']))
                 unset($data['spec']['goods_price']);
-
-            // 单规格
-            $this->spec()->save($data['spec']);
             // 价格
-            $this->price()->saveAll($every_price);
-
+            $goodsPriceModel = new \app\common\model\GoodsPrice();
+            $goodsPriceModel->saveAll($every_price);
         } else if ($data['spec_type'] == '20') {
             $price = [];
             if(isset($data['spec']['goods_price']))

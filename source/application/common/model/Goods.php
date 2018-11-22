@@ -61,11 +61,6 @@ class Goods extends BaseModel
         return $this->hasMany('GoodsImage')->order(['id' => 'asc']);
     }
 
-
-    public function price()
-    {
-        return $this->hasMany('GoodsPrice', 'goods_spec_id');
-    }
     /**
      * 关联运费模板表
      * @return \think\model\relation\BelongsTo
@@ -148,30 +143,30 @@ class Goods extends BaseModel
         !empty($search) && $filter['goods_name'] = ['like', '%' . trim($search) . '%'];
 
         // 排序规则
-        $sort = [];
-        if ($sortType === 'all') {
-            $sort = ['goods_sort', 'goods_id' => 'desc'];
-        } elseif ($sortType === 'sales') {
-            $sort = ['goods_sales' => 'desc'];
-        } elseif ($sortType === 'price') {
-            $sort = $sortPrice ? ['goods_max_price' => 'desc'] : ['goods_min_price'];
-        }
-        // 商品表名称
-        $tableName = $this->getTable();
-        // 多规格商品 最高价与最低价
-        $GoodsSpec = new GoodsSpec;
-        $minPriceSql = $GoodsSpec->field(['MIN(goods_price)'])
-            ->where('goods_id', 'EXP', "= `$tableName`.`goods_id`")->buildSql();
-        $maxPriceSql = $GoodsSpec->field(['MAX(goods_price)'])
-            ->where('goods_id', 'EXP', "= `$tableName`.`goods_id`")->buildSql();
+//        $sort = [];
+//        if ($sortType === 'all') {
+//            $sort = ['goods_sort', 'goods_id' => 'desc'];
+//        } elseif ($sortType === 'sales') {
+//            $sort = ['goods_sales' => 'desc'];
+//        } elseif ($sortType === 'price') {
+//            $sort = $sortPrice ? ['goods_max_price' => 'desc'] : ['goods_min_price'];
+//        }
+//        // 商品表名称
+//        $tableName = $this->getTable();
+//        // 多规格商品 最高价与最低价
+//        $GoodsSpec = new GoodsSpec;
+//        $minPriceSql = $GoodsSpec->field(['MIN(goods_price)'])
+//            ->where('goods_id', 'EXP', "= `$tableName`.`goods_id`")->buildSql();
+//        $maxPriceSql = $GoodsSpec->field(['MAX(goods_price)'])
+//            ->where('goods_id', 'EXP', "= `$tableName`.`goods_id`")->buildSql();
         // 执行查询
         $list = $this->field(['*', '(sales_initial + sales_actual) as goods_sales',
-            "$minPriceSql AS goods_min_price",
-            "$maxPriceSql AS goods_max_price"
+//            "$minPriceSql AS goods_min_price",
+//            "$maxPriceSql AS goods_max_price"
         ])->with(['category', 'image.file', 'spec'])
             ->where('is_delete', '=', 0)
             ->where($filter)
-            ->order($sort)
+//            ->order($sort)
             ->paginate(15, false, [
                 'query' => Request::instance()->request()
             ]);

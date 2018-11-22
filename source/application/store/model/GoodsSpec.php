@@ -63,6 +63,9 @@ class GoodsSpec extends GoodsSpecModel
     public function removeAll($goods_id)
     {
         $model = new GoodsSpecRel;
+        $goodsPriceModel = new \app\common\model\GoodsPrice();
+        $res = $this::get($goods_id);
+        $goodsPriceModel->where('goods_spec_id', '=', $res['goods_spec_id'])->delete();
         $model->where('goods_id','=', $goods_id)->delete();
         return $this->where('goods_id','=', $goods_id)->delete();
     }

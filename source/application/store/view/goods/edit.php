@@ -167,13 +167,23 @@
                                                value="<?= $model['spec'][0]['goods_no'] ?>">
                                     </div>
                                 </div>
-                                <div class="am-form-group">
-                                    <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">商品价格 </label>
-                                    <div class="am-u-sm-9 am-u-end">
-                                        <input type="number" class="tpl-form-input" name="goods[spec][goods_price]"
-                                               value="<?= $model['spec'][0]['goods_price'] ?>" required>
+<!--                                <div class="am-form-group">-->
+<!--                                    <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">商品价格 </label>-->
+<!--                                    <div class="am-u-sm-9 am-u-end">-->
+<!--                                        <input type="number" class="tpl-form-input" name="goods[spec][goods_price]"-->
+<!--                                               value="--><?//= $model['spec'][0]['goods_price'] ?><!--" required>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+                                <?php if($levels): foreach($levels as $level): ?>
+                                    <div class="am-form-group">
+                                        <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require"><?= $level['level']; ?>价格 </label>
+                                        <div class="am-u-sm-9 am-u-end">
+                                            <input type="number" class="tpl-form-input" name="goods[spec][goods_price][<?= $level['level_id']; ?>]"
+                                                   value="<?php foreach($prices as $p){ if($p['level_id']==$level['level_id']){echo $p['goods_price'];}} ?>" required>
+                                        </div>
                                     </div>
-                                </div>
+                                <?php endforeach; ?>
+                                <?php endif; ?>
                                 <div class="am-form-group">
                                     <label class="am-u-sm-3 am-u-lg-2 am-form-label">商品划线价 </label>
                                     <div class="am-u-sm-9 am-u-end">
