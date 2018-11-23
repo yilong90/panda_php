@@ -104,22 +104,28 @@ class Goods extends BaseModel
                 'spec_value' => $item['spec_value'],
             ];
         }
-
         // spec_list
         $specListData = [];
+
         foreach ($skuData->toArray() as $item) {
-            $specListData[] = [
+            $everyData = [
                 'goods_spec_id' => $item['goods_spec_id'],
                 'spec_sku_id' => $item['spec_sku_id'],
                 'rows' => [],
                 'form' => [
                     'goods_no' => $item['goods_no'],
-                    'goods_price' => $item['goods_price'],
+//                    'goods_price' => $item['goods_price'],\
                     'goods_weight' => $item['goods_weight'],
                     'line_price' => $item['line_price'],
                     'stock_num' => $item['stock_num'],
                 ],
             ];
+
+            $res = GoodsPrice::all(['goods_spec_id'=>$item['goods_spec_id']]);
+            foreach($res as $v) {
+                $everyData['form']['price'.$v['level_id']] = $v['goods_price'];
+            }
+            $specListData[] = $everyData;
         }
         return ['spec_attr' => array_values($specAttrData), 'spec_list' => $specListData];
     }

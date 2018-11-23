@@ -82,12 +82,17 @@ class Goods extends Controller
             $delivery = Delivery::getAll();
             // 多规格信息
             $specData = 'null';
-            if ($model['spec_type'] == 20)
+            $prices = 'null';
+
+            if ($model['spec_type'] == 20) {
                 $specData = json_encode($model->getManySpecData($model['spec_rel'], $model['spec']));
+            }elseif($model['spec_type'] == 10) {
+                $resGoodsSpec = GoodsSpec::get(['goods_id' => $goods_id]);
+                $prices = GoodsPrice::all(['goods_spec_id'=>$resGoodsSpec['goods_spec_id']]);
+            }
             $levels = Level::getAll();
-            $resGoodsSpec = GoodsSpec::get(['goods_id' => $goods_id]);
-            $prices = GoodsPrice::all(['goods_spec_id'=>$resGoodsSpec['goods_spec_id']]);
             return $this->fetch('edit', compact('model', 'catgory', 'delivery', 'specData', 'levels', 'prices'));
+
         }
         // 更新记录
         if ($model->edit($this->postData('goods'))) {

@@ -77,7 +77,7 @@
                             </div>
 
                             <div class="goods-spec-many am-form-group">
-                                <div class="goods-spec-box am-u-sm-9 am-u-sm-push-2 am-u-end">
+                                <div class="goods-spec-box am-u-sm-11 am-u-sm-push-1 am-u-end">
                                     <!-- 规格属性 -->
                                     <div class="spec-attr"></div>
 

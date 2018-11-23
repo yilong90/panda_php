@@ -91,7 +91,7 @@
                             <!-- 商品多规格 -->
                             <div class="goods-spec-many am-form-group"
                                  style="display: <?= $model['spec_type'] == 20 ? 'block' : 'none' ?>;">
-                                <div class="goods-spec-box am-u-sm-9 am-u-sm-push-2 am-u-end">
+                                <div class="goods-spec-box am-u-sm-11 am-u-sm-push-1 am-u-end">
                                     <!-- 规格属性 -->
                                     <div class="spec-attr"></div>
 
@@ -179,7 +179,9 @@
                                         <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require"><?= $level['level']; ?>价格 </label>
                                         <div class="am-u-sm-9 am-u-end">
                                             <input type="number" class="tpl-form-input" name="goods[spec][goods_price][<?= $level['level_id']; ?>]"
-                                                   value="<?php foreach($prices as $p){ if($p['level_id']==$level['level_id']){echo $p['goods_price'];}} ?>" required>
+                                                  <?php if($prices !== 'null'):?>
+                                                      value="<?php foreach($prices as $p){ if($p['level_id']==$level['level_id']){echo $p['goods_price'];}} ?>"
+                                                  <?php endif;?> required>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>

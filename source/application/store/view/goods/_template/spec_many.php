@@ -50,7 +50,7 @@
         </td>
         <?php if($levels): foreach($levels as $level): ?>
                     <td>
-                        <input type="number" name="price<?= $level['level_id']; ?>" value="" class="am-field-valid ipt-w80"
+                        <input type="number" name="price<?= $level['level_id']; ?>" value="{{ item.form.price<?= $level['level_id']?> }}" class="am-field-valid ipt-w80"
                                required>
                     </td>
         <?php endforeach; ?>
