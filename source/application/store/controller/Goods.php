@@ -5,6 +5,7 @@ namespace app\store\controller;
 use app\common\model\GoodsPrice;
 use app\store\model\GoodsSpec;
 use app\store\model\Level;
+use app\store\model\Warehouse;
 use app\store\model\Category;
 use app\store\model\Delivery;
 use app\store\model\Goods as GoodsModel;
@@ -40,7 +41,8 @@ class Goods extends Controller
             // 配送模板
             $delivery = Delivery::getAll();
             $levels = Level::getAll();
-            return $this->fetch('add', compact('catgory', 'delivery', 'levels'));
+            $warehouse = Warehouse::getAll();
+            return $this->fetch('add', compact('catgory', 'delivery', 'levels', 'warehouse'));
         }
         $model = new GoodsModel;
         if ($model->add($this->postData('goods'))) {
@@ -84,6 +86,7 @@ class Goods extends Controller
             $specData = 'null';
             $prices = 'null';
 
+            $warehouse = Warehouse::getAll();
             if ($model['spec_type'] == 20) {
                 $specData = json_encode($model->getManySpecData($model['spec_rel'], $model['spec']));
             }elseif($model['spec_type'] == 10) {
@@ -91,7 +94,7 @@ class Goods extends Controller
                 $prices = GoodsPrice::all(['goods_spec_id'=>$resGoodsSpec['goods_spec_id']]);
             }
             $levels = Level::getAll();
-            return $this->fetch('edit', compact('model', 'catgory', 'delivery', 'specData', 'levels', 'prices'));
+            return $this->fetch('edit', compact('model', 'catgory', 'delivery', 'specData', 'levels', 'prices', 'warehouse'));
 
         }
         // 更新记录

@@ -45,6 +45,21 @@
                                 </div>
                             </div>
                             <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">仓库 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <select name="goods[warehouse_id]" required
+                                            data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择仓库'}">
+                                        <option value=""></option>
+                                        <?php if (isset($warehouse)): foreach ($warehouse as $first): ?>
+                                            <option value="<?= $first['warehouse_id'] ?>"
+                                                <?php if($model['warehouse']['warehouse_id']==$first['warehouse_id']) echo "selected" ?>>
+                                                    <?= $first['warehouse'] ?>
+                                            </option>
+                                        <?php endforeach; endif; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="am-form-group">
                                 <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">商品图片 </label>
                                 <div class="am-u-sm-9 am-u-end">
                                     <div class="am-form-file">

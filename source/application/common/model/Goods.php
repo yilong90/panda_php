@@ -70,6 +70,11 @@ class Goods extends BaseModel
         return $this->BelongsTo('Delivery');
     }
 
+    public function warehouse()
+    {
+        return $this->BelongsTo('Warehouse');
+    }
+
     /**
      * 计费方式
      * @param $value
