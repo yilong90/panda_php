@@ -256,13 +256,17 @@ class Goods extends BaseModel
      * @param $goods_sku_id
      * @return array|bool
      */
-    public function getGoodsSku($goods_sku_id)
+    public function getGoodsSku($goods_sku_id, $level_id='')
     {
         $goodsSkuData = array_column($this['spec']->toArray(), null, 'spec_sku_id');
         if (!isset($goodsSkuData[$goods_sku_id])) {
             return false;
         }
         $goods_sku = $goodsSkuData[$goods_sku_id];
+        if($level_id){
+            $price = GoodsPrice::get(['goods_spec_id'=>$goods_sku['goods_spec_id'], 'level_id'=>$level_id]);
+            $goods_sku['goods_price'] = $price['goods_price'];
+        }
         // 多规格文字内容
         $goods_sku['goods_attr'] = '';
         if ($this['spec_type'] === 20) {

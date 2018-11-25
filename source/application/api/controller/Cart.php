@@ -39,7 +39,9 @@ class Cart extends Controller
      */
     public function lists()
     {
-        return $this->renderSuccess($this->model->getList($this->user));
+        $user_info = $this->getUser();
+        $level_id = $user_info['level_id'];
+        return $this->renderSuccess($this->model->getList($this->user, $level_id));
     }
 
     /**
@@ -52,7 +54,9 @@ class Cart extends Controller
      */
     public function add($goods_id, $goods_num, $goods_sku_id)
     {
-        if (!$this->model->add($goods_id, $goods_num, $goods_sku_id)) {
+        $user_info = $this->getUser();
+        $level_id = $user_info['level_id'];
+        if (!$this->model->add($goods_id, $goods_num, $goods_sku_id, $level_id)) {
             return $this->renderError($this->model->getError() ?: '加入购物车失败');
         }
         $total_num = $this->model->getTotalNum();

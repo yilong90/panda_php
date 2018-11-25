@@ -43,7 +43,7 @@ class Cart
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($user)
+    public function getList($user, $level_id)
     {
         // 商品列表
         $goodsList = [];
@@ -70,7 +70,7 @@ class Cart
             // 商品sku信息
             $goods['goods_sku_id'] = $cart['goods_sku_id'];
             // 商品sku不存在则自动删除
-            if (!$goods['goods_sku'] = $goods->getGoodsSku($cart['goods_sku_id'])) {
+            if (!$goods['goods_sku'] = $goods->getGoodsSku($cart['goods_sku_id'], $level_id)) {
                 $this->delete($cart['goods_id'], $cart['goods_sku_id']);
                 continue;
             }
@@ -126,14 +126,14 @@ class Cart
      * @return bool
      * @throws \think\exception\DbException
      */
-    public function add($goods_id, $goods_num, $goods_sku_id)
+    public function add($goods_id, $goods_num, $goods_sku_id, $level_id)
     {
         // 购物车商品索引
         $index = $goods_id . '_' . $goods_sku_id;
         // 商品信息
         $goods = Goods::detail($goods_id);
         // 商品sku信息
-        $goods['goods_sku'] = $goods->getGoodsSku($goods_sku_id);
+        $goods['goods_sku'] = $goods->getGoodsSku($goods_sku_id, $level_id);
         // 判断商品是否下架
         if ($goods['goods_status']['value'] != 10) {
             $this->setError('很抱歉，该商品已下架');
