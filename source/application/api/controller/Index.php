@@ -19,14 +19,16 @@ class Index extends Controller
      */
     public function page()
     {
+        $user_info = $this->getUser();
+        $level_id = $user_info['level_id'];
         // 页面元素
         $wxappPage = WxappPage::detail();
         $items = $wxappPage['page_data']['array']['items'];
         // 新品推荐
         $model = new GoodsModel;
-        $newest = $model->getNewList();
+        $newest = $model->getNewList($level_id);
         // 猜您喜欢
-        $best = $model->getBestList();
+        $best = $model->getBestList($level_id);
         return $this->renderSuccess(compact('items', 'newest', 'best'));
     }
 

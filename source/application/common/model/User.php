@@ -92,6 +92,6 @@ class User extends BaseModel
      */
     public static function detail($where)
     {
-        return self::get($where);
+        return self::get($where, 'level');
     }
 }

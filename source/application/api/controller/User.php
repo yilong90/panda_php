@@ -23,7 +23,8 @@ class User extends Controller
         $model = new UserModel;
         $user_id = $model->login($this->request->post());
         $token = $model->getToken();
-        return $this->renderSuccess(compact('user_id', 'token'));
+        $user_info = UserModel::getUser($token);
+        return $this->renderSuccess(compact('user_id', 'token', 'user_info'));
     }
 
 }

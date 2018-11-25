@@ -87,7 +87,7 @@ class Goods extends BaseModel
      * @param \think\Collection $skuData
      * @return array
      */
-    public function getManySpecData($spec_rel, $skuData)
+    public function getManySpecData($spec_rel, $skuData, $level_id='')
     {
         // spec_attr
         $specAttrData = [];
@@ -121,11 +121,17 @@ class Goods extends BaseModel
                 ],
             ];
 
-            $res = GoodsPrice::all(['goods_spec_id'=>$item['goods_spec_id']]);
-            foreach($res as $v) {
-                $everyData['form']['price'.$v['level_id']] = $v['goods_price'];
+            if($level_id) {
+                $res = GoodsPrice::get(['goods_spec_id'=>$item['goods_spec_id'], 'level_id'=>$level_id]);
+                $everyData['form']['goods_price'] = $res['goods_price'];
+            } else {
+                $res = GoodsPrice::all(['goods_spec_id'=>$item['goods_spec_id']]);
+                foreach($res as $v) {
+                    $everyData['form']['price'.$v['level_id']] = $v['goods_price'];
+                }
             }
             $specListData[] = $everyData;
+
         }
         return ['spec_attr' => array_values($specAttrData), 'spec_list' => $specListData];
     }
@@ -185,8 +191,16 @@ class Goods extends BaseModel
      * @return null|static
      * @throws \think\exception\DbException
      */
-    public static function detail($goods_id)
+    public static function detail($goods_id, $level_id='')
     {
+        if($level_id) {
+            $res = self::get($goods_id, ['category', 'image.file', 'spec', 'spec_rel.spec', 'delivery.rule']);
+            foreach($res['spec'] as $s) {
+                $price = GoodsPrice::get(['goods_spec_id'=>$s['goods_spec_id'], 'level_id'=>$level_id]);
+                $s['goods_price'] = $price['goods_price'];
+            }
+            return $res;
+        }
         return self::get($goods_id, ['category', 'image.file', 'spec', 'spec_rel.spec', 'delivery.rule']);
     }
 
@@ -197,14 +211,21 @@ class Goods extends BaseModel
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getBestList()
+    public function getBestList($level_id)
     {
-        return $this->with(['spec', 'category', 'image.file'])
+        $res = $this->with(['spec', 'category', 'image.file'])
             ->where('is_delete', '=', 0)
             ->where('goods_status', '=', 10)
             ->order(['sales_initial' => 'desc', 'goods_sort' => 'asc'])
             ->limit(10)
             ->select();
+        foreach($res  as $v) {
+            foreach($v['spec'] as $s) {
+                $price = GoodsPrice::get(['goods_spec_id'=>$s['goods_spec_id'], 'level_id'=>$level_id]);
+                $s['goods_price'] = $price['goods_price'];
+            }
+        }
+        return $res;
     }
 
     /**
@@ -214,13 +235,20 @@ class Goods extends BaseModel
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getNewList()
+    public function getNewList($level_id)
     {
-        return $this->with(['spec', 'category', 'image.file'])
+        $res = $this->with(['spec', 'category', 'image.file'])
             ->where('is_delete', '=', 0)
             ->where('goods_status', '=', 10)
             ->order(['goods_id' => 'desc', 'goods_sort' => 'asc'])
             ->select();
+        foreach($res  as $v) {
+            foreach($v['spec'] as $s) {
+                $price = GoodsPrice::get(['goods_spec_id'=>$s['goods_spec_id'], 'level_id'=>$level_id]);
+                $s['goods_price'] = $price['goods_price'];
+            }
+        }
+        return $res;
     }
 
     /**
