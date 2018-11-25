@@ -40,9 +40,11 @@ class Order extends Controller
      */
     public function buyNow($goods_id, $goods_num, $goods_sku_id)
     {
+        $user_info = $this->getUser();
+        $level_id = $user_info['level_id'];
         // 商品结算信息
         $model = new OrderModel;
-        $order = $model->getBuyNow($this->user, $goods_id, $goods_num, $goods_sku_id);
+        $order = $model->getBuyNow($this->user, $goods_id, $goods_num, $goods_sku_id, $level_id);
         if (!$this->request->isPost()) {
             return $this->renderSuccess($order);
         }

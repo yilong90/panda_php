@@ -31,7 +31,7 @@ class Order extends OrderModel
      * @return array
      * @throws \think\exception\DbException
      */
-    public function getBuyNow($user, $goods_id, $goods_num, $goods_sku_id)
+    public function getBuyNow($user, $goods_id, $goods_num, $goods_sku_id, $level_id)
     {
         // 商品信息
         /* @var Goods $goods */
@@ -41,7 +41,7 @@ class Order extends OrderModel
             $this->setError('很抱歉，商品信息不存在或已下架');
         }
         // 商品sku信息
-        $goods['goods_sku'] = $goods->getGoodsSku($goods_sku_id);
+        $goods['goods_sku'] = $goods->getGoodsSku($goods_sku_id, $level_id);
         // 判断商品库存
         if ($goods_num > $goods['goods_sku']['stock_num']) {
             $this->setError('很抱歉，商品库存不足');
