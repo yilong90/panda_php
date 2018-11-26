@@ -92,7 +92,7 @@ class Order extends OrderModel
         $model = new Cart($user['user_id']);
         $res = User::get($user['user_id']);
         $level_id = $res['level_id'];
-        return $model->getList($user, $level_id);
+        return $model->getList($user, $level_id, true);
     }
 
     /**

@@ -43,7 +43,7 @@ class Cart
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function getList($user, $level_id)
+    public function getList($user, $level_id, $is_split=false)
     {
         // 商品列表
         $goodsList = [];
@@ -59,6 +59,7 @@ class Cart
         $intraRegion = true;
         // 购物车商品列表
         $cartList = [];
+
         foreach ($this->cart as $key => $cart) {
             // 判断商品不存在则自动删除
             if (!isset($goodsList[$cart['goods_id']])) {
@@ -98,24 +99,81 @@ class Cart
             }
             $cartList[] = $goods->toArray();
         }
-        // 商品总金额
-        $orderTotalPrice = array_sum(array_column($cartList, 'total_price'));
-        // 所有商品的运费金额
-        $allExpressPrice = array_column($cartList, 'express_price');
-        // 订单总运费金额
-        $expressPrice = $allExpressPrice ? Delivery::freightRule($allExpressPrice) : 0.00;
-        return [
-            'goods_list' => $cartList,                       // 商品列表
-            'order_total_num' => $this->getTotalNum(),       // 商品总数量
-            'order_total_price' => round($orderTotalPrice, 2),              // 商品总金额 (不含运费)
-            'order_pay_price' => bcadd($orderTotalPrice, $expressPrice, 2),    // 实际支付金额
-            'address' => $user['address_default'],  // 默认地址
-            'exist_address' => $exist_address,      // 是否存在收货地址
-            'express_price' => $expressPrice,       // 配送费用
-            'intra_region' => $intraRegion,         // 当前用户收货城市是否存在配送规则中
-            'has_error' => $this->hasError(),
-            'error_msg' => $this->getError(),
-        ];
+
+        if($is_split) {
+            //todo 拆单，按照仓库去拆单，初步想法为结算之前拆，用户确认，然后后台拆分
+            $splitCartList = [];
+            $orderTotalPrice = [];
+            $expressPrice = [];
+
+            foreach ($cartList as $v) {
+//                $splitCartList[$v['warehouse_id']][] = $v;
+//                // 商品总金额
+//                $orderTotalPrice[$v['warehouse_id']] = array_sum(array_column($splitCartList[$v['warehouse_id']], 'total_price'));
+//                // 所有商品的运费金额
+//                $allExpressPrice[$v['warehouse_id']] = array_column($splitCartList[$v['warehouse_id']], 'express_price');
+//                // 订单总运费金额
+//                $expressPrice[$v['warehouse_id']] = $allExpressPrice[$v['warehouse_id']] ? Delivery::freightRule($allExpressPrice[$v['warehouse_id']]) : 0.00;
+//
+                $splitCartList[$v['warehouse_id']]['goods_list'][] = $v;
+
+                if(isset($splitCartList[$v['warehouse_id']]['total_num'])) {
+                    $splitCartList[$v['warehouse_id']]['total_num'] += $v['total_num'];
+                } else {
+                    $splitCartList[$v['warehouse_id']]['total_num'] = $v['total_num'];
+                }
+
+                if(isset($splitCartList[$v['warehouse_id']]['total_price'])) {
+                    $splitCartList[$v['warehouse_id']]['total_price'] += $v['total_price'];
+                } else {
+                    $splitCartList[$v['warehouse_id']]['total_price'] = $v['total_price'];
+                }
+
+                if(isset($splitCartList[$v['warehouse_id']]['express_price'])) {
+                    $splitCartList[$v['warehouse_id']]['express_price'] += $v['express_price'];
+                } else {
+                    $splitCartList[$v['warehouse_id']]['express_price'] = $v['express_price'];
+                }
+                // 商品总金额
+                $orderTotalPrice[$v['warehouse_id']] = array_sum(array_column($splitCartList[$v['warehouse_id']]['goods_list'], 'total_price'));
+                // 所有商品的运费金额
+                $allExpressPrice[$v['warehouse_id']] = array_column($splitCartList[$v['warehouse_id']]['goods_list'], 'express_price');
+                // 订单总运费金额
+                $expressPrice[$v['warehouse_id']] = $allExpressPrice[$v['warehouse_id']] ? Delivery::freightRule($allExpressPrice[$v['warehouse_id']]) : 0.00;
+
+            }
+            return [
+                'goods_list' => array_values($splitCartList),                       // 商品列表
+                'order_total_num' => $this->getTotalNum(),       // 商品总数量
+                'order_total_price' => round(array_sum($orderTotalPrice), 2),              // 商品总金额 (不含运费)
+                'order_pay_price' => bcadd(array_sum($orderTotalPrice), array_sum($expressPrice), 2),    // 实际支付金额
+                'address' => $user['address_default'],  // 默认地址
+                'exist_address' => $exist_address,      // 是否存在收货地址
+                'express_price' => array_sum($expressPrice),       // 配送费用
+                'intra_region' => $intraRegion,         // 当前用户收货城市是否存在配送规则中
+                'has_error' => $this->hasError(),
+                'error_msg' => $this->getError(),
+            ];
+        } else {
+            // 商品总金额
+            $orderTotalPrice = array_sum(array_column($cartList, 'total_price'));
+            // 所有商品的运费金额
+            $allExpressPrice = array_column($cartList, 'express_price');
+            // 订单总运费金额
+            $expressPrice = $allExpressPrice ? Delivery::freightRule($allExpressPrice) : 0.00;
+            return [
+                'goods_list' => $cartList,                       // 商品列表
+                'order_total_num' => $this->getTotalNum(),       // 商品总数量
+                'order_total_price' => round($orderTotalPrice, 2),              // 商品总金额 (不含运费)
+                'order_pay_price' => bcadd($orderTotalPrice, $expressPrice, 2),    // 实际支付金额
+                'address' => $user['address_default'],  // 默认地址
+                'exist_address' => $exist_address,      // 是否存在收货地址
+                'express_price' => $expressPrice,       // 配送费用
+                'intra_region' => $intraRegion,         // 当前用户收货城市是否存在配送规则中
+                'has_error' => $this->hasError(),
+                'error_msg' => $this->getError(),
+            ];
+        }
     }
 
     /**
