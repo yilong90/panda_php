@@ -45,6 +45,10 @@ class Order extends Controller
         // 商品结算信息
         $model = new OrderModel;
         $order = $model->getBuyNow($this->user, $goods_id, $goods_num, $goods_sku_id, $level_id);
+        $goods_list = $order['goods_list'];
+        unset($order['goods_list']);
+        $order['goods_list'][0] =  $goods_list;
+        $order['goods_list'][0]['goods_list'] =  $goods_list;
         if (!$this->request->isPost()) {
             return $this->renderSuccess($order);
         }
