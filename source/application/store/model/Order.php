@@ -22,7 +22,7 @@ class Order extends OrderModel
     {
         return $this->with(['goods.image', 'address', 'user'])
             ->where($filter)
-            ->where('is_suborder', '=', 0)
+            ->where('pid', '=', 0)
             ->order(['create_time' => 'desc'])->paginate(10, false, [
                 'query' => Request::instance()->request()
             ]);

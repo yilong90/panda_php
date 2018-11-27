@@ -170,8 +170,21 @@ class Order extends OrderModel
         } else {
             //多订单
             Db::startTrans();
-            $subOrder = [];
+            $orderNo = $this->orderNo();
+            $this->save([
+                'user_id' => $user_id,
+                'wxapp_id' => self::$wxapp_id,
+                'order_no' => $orderNo,
+                'total_price' => $order['order_total_price'],
+                'pay_price' => $order['order_pay_price'],
+                'express_price' => $order['express_price'],
+            ]);
+            $pid = $this->data['order_id'];
             foreach ($order['goods_list'] as $goods) {
+                $this->pk = NULL;
+                $this->data = [];
+                $this->origin = [];
+                $this->isUpdate = false;
                 $subOrderNo = $this->orderNo();
                 $this->save([
                     'user_id' => $user_id,
@@ -179,9 +192,8 @@ class Order extends OrderModel
                     'order_no' => $subOrderNo,
                     'total_price' => $goods['total_price'],
                     'express_price' => $order['express_price'],
-                    'is_suborder' => 1,
+                    'path' => $pid
                 ]);
-                $subOrder[] = $this->data['order_id'];
                 // 订单商品列表
                 $goodsList = [];
                 // 更新商品库存 (下单减库存)
@@ -228,21 +240,7 @@ class Order extends OrderModel
                     'region_id' => $order['address']['region_id'],
                     'detail' => $order['address']['detail'],
                 ]);
-                $this->pk = NULL;
-                $this->data = [];
-                $this->origin = [];
-                $this->isUpdate = false;
             }
-            $orderNo = $this->orderNo();
-            $this->save([
-                'user_id' => $user_id,
-                'wxapp_id' => self::$wxapp_id,
-                'order_no' => $orderNo,
-                'total_price' => $order['order_total_price'],
-                'pay_price' => $order['order_pay_price'],
-                'express_price' => $order['express_price'],
-                'suborder' => implode('-', $subOrder),
-            ]);
             Db::commit();
         }
         return true;
