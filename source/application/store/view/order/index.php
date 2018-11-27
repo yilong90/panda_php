@@ -21,10 +21,10 @@
                             <?php if (!$list->isEmpty()): ?>
                                 <?php foreach ($list as $order): ?>
                                 <tr class="order-empty">
-                                    <td colspan="6"></td>
+                                    <td colspan="4"></td>
                                 </tr>
                                 <tr>
-                                    <td class="am-text-middle am-text-left" colspan="6">
+                                    <td class="am-text-middle am-text-left" colspan="4">
                                         <span class="am-margin-right-lg"> <?= $order['create_time'] ?></span>
                                         <span class="am-margin-right-lg">订单号：<?= $order['order_no'] ?></span>
                                     </td>
@@ -73,7 +73,7 @@
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="6" class="am-text-center">暂无记录</td>
+                                    <td colspan="4" class="am-text-center">暂无记录</td>
                                 </tr>
                             <?php endif; ?>
                             </tbody>
