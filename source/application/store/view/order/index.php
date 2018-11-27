@@ -30,68 +30,111 @@
                                         <span class="am-margin-right-lg">订单号：<?= $order['order_no'] ?></span>
                                     </td>
                                 </tr>
-                                <?php $i = 0;
-                                foreach ($order['goods'] as $goods): $i++; ?>
-                                    <tr>
-                                        <td class="goods-detail am-text-middle">
-                                            <div class="goods-image">
-                                                <img src="<?= $goods['image']['file_path'] ?>" alt="">
-                                            </div>
-                                            <div class="goods-info">
-                                                <p class="goods-title"><?= $goods['goods_name'] ?></p>
-                                                <p class="goods-spec am-link-muted">
-                                                    <?= $goods['goods_attr'] ?>
-                                                </p>
-                                            </div>
-                                        </td>
-                                        <td class="am-text-middle">
-                                            <p>￥<?= $goods['goods_price'] ?></p>
-                                            <p>×<?= $goods['total_num'] ?></p>
-                                        </td>
-                                        <?php if ($i === 1) : $goodsCount = count($order['goods']); ?>
-                                            <td class="am-text-middle" rowspan="<?= $goodsCount ?>">
-                                                <p>￥<?= $order['pay_price'] ?></p>
-                                                <p class="am-link-muted">(含运费：￥<?= $order['express_price'] ?>)</p>
-                                            </td>
-                                            <td class="am-text-middle" rowspan="<?= $goodsCount ?>">
-                                                <p><?= $order['user']['nickName'] ?></p>
-                                                <p class="am-link-muted">(用户id：<?= $order['user']['user_id'] ?>)</p>
-                                            </td>
-                                            <td class="am-text-middle" rowspan="<?= $goodsCount ?>">
-                                                <p>付款状态：
-                                                    <span class="am-badge
+                                <?php if($order['suborder']): ?>
+                                    <td colspan="2" class="am-text-middle">包含子订单，请查看订单详情！</td>
+                                    <td class="am-text-middle">
+                                        <p>￥<?= $order['pay_price'] ?></p>
+                                        <p class="am-link-muted">(含运费：￥<?= $order['express_price'] ?>)</p>
+                                    </td>
+                                    <td class="am-text-middle">
+                                        <p><?= $order['user']['nickName'] ?></p>
+                                        <p class="am-link-muted">(用户id：<?= $order['user']['user_id'] ?>)</p>
+                                    </td>
+                                    <td class="am-text-middle">
+                                        <p>付款状态：
+                                            <span class="am-badge
                                                 <?= $order['pay_status']['value'] == 20 ? 'am-badge-success' : '' ?>">
                                                         <?= $order['pay_status']['text'] ?></span>
-                                                </p>
-                                                <p>发货状态：
-                                                    <span class="am-badge
+                                        </p>
+                                        <p>发货状态：
+                                            <span class="am-badge
                                                 <?= $order['delivery_status']['value'] == 20 ? 'am-badge-success' : '' ?>">
                                                         <?= $order['delivery_status']['text'] ?></span>
-                                                </p>
-                                                <p>收货状态：
-                                                    <span class="am-badge
+                                        </p>
+                                        <p>收货状态：
+                                            <span class="am-badge
                                                 <?= $order['receipt_status']['value'] == 20 ? 'am-badge-success' : '' ?>">
                                                         <?= $order['receipt_status']['text'] ?></span>
-                                                </p>
-                                            </td>
-                                            <td class="am-text-middle" rowspan="<?= $goodsCount ?>">
-                                                <div class="tpl-table-black-operation">
-                                                    <a class="tpl-table-black-operation-green"
-                                                       href="<?= url('order/detail', ['order_id' => $order['order_id']]) ?>">
-                                                        订单详情</a>
-                                                    <?php if ($order['pay_status']['value'] == 20
-                                                        && $order['delivery_status']['value'] == 10): ?>
-                                                        <a class="tpl-table-black-operation"
-                                                           href="<?= url('order/detail#delivery',
-                                                               ['order_id' => $order['order_id']]) ?>">
-                                                            去发货</a>
-                                                    <?php endif; ?>
+                                        </p>
+                                    </td>
+                                    <td class="am-text-middle">
+                                        <div class="tpl-table-black-operation">
+                                            <a class="tpl-table-black-operation-green"
+                                               href="<?= url('order/detail', ['order_id' => $order['order_id']]) ?>">
+                                                订单详情</a>
+                                            <?php if ($order['pay_status']['value'] == 20
+                                                && $order['delivery_status']['value'] == 10): ?>
+                                                <a class="tpl-table-black-operation"
+                                                   href="<?= url('order/detail#delivery',
+                                                       ['order_id' => $order['order_id']]) ?>">
+                                                    去发货</a>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                <?php else: ?>
+                                <?php $i = 0;
+                                    foreach ($order['goods'] as $goods): $i++; ?>
+                                        <tr>
+                                            <td class="goods-detail am-text-middle">
+                                                <div class="goods-image">
+                                                    <img src="<?= $goods['image']['file_path'] ?>" alt="">
+                                                </div>
+                                                <div class="goods-info">
+                                                    <p class="goods-title"><?= $goods['goods_name'] ?></p>
+                                                    <p class="goods-spec am-link-muted">
+                                                        <?= $goods['goods_attr'] ?>
+                                                    </p>
                                                 </div>
                                             </td>
-                                        <?php endif; ?>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endforeach; else: ?>
+                                            <td class="am-text-middle">
+                                                <p>￥<?= $goods['goods_price'] ?></p>
+                                                <p>×<?= $goods['total_num'] ?></p>
+                                            </td>
+                                            <?php if ($i === 1) : $goodsCount = count($order['goods']); ?>
+                                                <td class="am-text-middle" rowspan="<?= $goodsCount ?>">
+                                                    <p>￥<?= $order['pay_price'] ?></p>
+                                                    <p class="am-link-muted">(含运费：￥<?= $order['express_price'] ?>)</p>
+                                                </td>
+                                                <td class="am-text-middle" rowspan="<?= $goodsCount ?>">
+                                                    <p><?= $order['user']['nickName'] ?></p>
+                                                    <p class="am-link-muted">(用户id：<?= $order['user']['user_id'] ?>)</p>
+                                                </td>
+                                                <td class="am-text-middle" rowspan="<?= $goodsCount ?>">
+                                                    <p>付款状态：
+                                                        <span class="am-badge
+                                                <?= $order['pay_status']['value'] == 20 ? 'am-badge-success' : '' ?>">
+                                                        <?= $order['pay_status']['text'] ?></span>
+                                                    </p>
+                                                    <p>发货状态：
+                                                        <span class="am-badge
+                                                <?= $order['delivery_status']['value'] == 20 ? 'am-badge-success' : '' ?>">
+                                                        <?= $order['delivery_status']['text'] ?></span>
+                                                    </p>
+                                                    <p>收货状态：
+                                                        <span class="am-badge
+                                                <?= $order['receipt_status']['value'] == 20 ? 'am-badge-success' : '' ?>">
+                                                        <?= $order['receipt_status']['text'] ?></span>
+                                                    </p>
+                                                </td>
+                                                <td class="am-text-middle" rowspan="<?= $goodsCount ?>">
+                                                    <div class="tpl-table-black-operation">
+                                                        <a class="tpl-table-black-operation-green"
+                                                           href="<?= url('order/detail', ['order_id' => $order['order_id']]) ?>">
+                                                            订单详情</a>
+                                                        <?php if ($order['pay_status']['value'] == 20
+                                                            && $order['delivery_status']['value'] == 10): ?>
+                                                            <a class="tpl-table-black-operation"
+                                                               href="<?= url('order/detail#delivery',
+                                                                   ['order_id' => $order['order_id']]) ?>">
+                                                                去发货</a>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </td>
+                                            <?php endif; ?>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                                <?php endforeach; else: ?>
                                 <tr>
                                     <td colspan="6" class="am-text-center">暂无记录</td>
                                 </tr>

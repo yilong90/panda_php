@@ -108,63 +108,142 @@ class Order extends OrderModel
             $this->error = '请先选择收货地址';
             return false;
         }
-        Db::startTrans();
-        // 记录订单信息
-        $this->save([
-            'user_id' => $user_id,
-            'wxapp_id' => self::$wxapp_id,
-            'order_no' => $this->orderNo(),
-            'total_price' => $order['order_total_price'],
-            'pay_price' => $order['order_pay_price'],
-            'express_price' => $order['express_price'],
-        ]);
-        // 订单商品列表
-        $goodsList = [];
-        // 更新商品库存 (下单减库存)
-        $deductStockData = [];
-        foreach ($order['goods_list'] as $goods) {
-            /* @var Goods $goods */
-            $goodsList[] = [
+        if(count($order['goods_list']) == 1) {
+            Db::startTrans();
+            // 记录订单信息
+            $this->save([
                 'user_id' => $user_id,
                 'wxapp_id' => self::$wxapp_id,
-                'goods_id' => $goods['goods_id'],
-                'goods_name' => $goods['goods_name'],
-                'image_id' => $goods['image'][0]['image_id'],
-                'deduct_stock_type' => $goods['deduct_stock_type'],
-                'spec_type' => $goods['spec_type'],
-                'spec_sku_id' => $goods['goods_sku']['spec_sku_id'],
-                'goods_spec_id' => $goods['goods_sku']['goods_spec_id'],
-                'goods_attr' => $goods['goods_sku']['goods_attr'],
-                'content' => $goods['content'],
-                'goods_no' => $goods['goods_sku']['goods_no'],
-                'goods_price' => $goods['goods_sku']['goods_price'],
-                'line_price' => $goods['goods_sku']['line_price'],
-                'goods_weight' => $goods['goods_sku']['goods_weight'],
-                'total_num' => $goods['total_num'],
-                'total_price' => $goods['total_price'],
-            ];
-            // 下单减库存
-            $goods['deduct_stock_type'] == 10 && $deductStockData[] = [
-                'goods_spec_id' => $goods['goods_sku']['goods_spec_id'],
-                'stock_num' => ['dec', $goods['total_num']]
-            ];
+                'order_no' => $this->orderNo(),
+                'total_price' => $order['order_total_price'],
+                'pay_price' => $order['order_pay_price'],
+                'express_price' => $order['express_price'],
+            ]);
+            // 订单商品列表
+            $goodsList = [];
+            // 更新商品库存 (下单减库存)
+            $deductStockData = [];
+            foreach ($order['goods_list'][0]['goods_list'] as $goods) {
+                /* @var Goods $goods */
+                $goodsList[] = [
+                    'user_id' => $user_id,
+                    'wxapp_id' => self::$wxapp_id,
+                    'goods_id' => $goods['goods_id'],
+                    'goods_name' => $goods['goods_name'],
+                    'image_id' => $goods['image'][0]['image_id'],
+                    'deduct_stock_type' => $goods['deduct_stock_type'],
+                    'spec_type' => $goods['spec_type'],
+                    'spec_sku_id' => $goods['goods_sku']['spec_sku_id'],
+                    'goods_spec_id' => $goods['goods_sku']['goods_spec_id'],
+                    'goods_attr' => $goods['goods_sku']['goods_attr'],
+                    'content' => $goods['content'],
+                    'goods_no' => $goods['goods_sku']['goods_no'],
+                    'goods_price' => $goods['goods_sku']['goods_price'],
+                    'line_price' => $goods['goods_sku']['line_price'],
+                    'goods_weight' => $goods['goods_sku']['goods_weight'],
+                    'total_num' => $goods['total_num'],
+                    'total_price' => $goods['total_price'],
+                ];
+                // 下单减库存
+                $goods['deduct_stock_type'] == 10 && $deductStockData[] = [
+                    'goods_spec_id' => $goods['goods_sku']['goods_spec_id'],
+                    'stock_num' => ['dec', $goods['total_num']]
+                ];
+            }
+            // 保存订单商品信息
+            $this->goods()->saveAll($goodsList);
+            // 更新商品库存
+            !empty($deductStockData) && (new GoodsSpec)->isUpdate()->saveAll($deductStockData);
+            // 记录收货地址
+            $this->address()->save([
+                'user_id' => $user_id,
+                'wxapp_id' => self::$wxapp_id,
+                'name' => $order['address']['name'],
+                'phone' => $order['address']['phone'],
+                'province_id' => $order['address']['province_id'],
+                'city_id' => $order['address']['city_id'],
+                'region_id' => $order['address']['region_id'],
+                'detail' => $order['address']['detail'],
+            ]);
+            Db::commit();
+        } else {
+            //多订单
+            Db::startTrans();
+            $subOrder = [];
+            foreach ($order['goods_list'] as $goods) {
+                $subOrderNo = $this->orderNo();
+                $this->save([
+                    'user_id' => $user_id,
+                    'wxapp_id' => self::$wxapp_id,
+                    'order_no' => $subOrderNo,
+                    'total_price' => $goods['total_price'],
+                    'express_price' => $order['express_price'],
+                    'is_suborder' => 1,
+                ]);
+                $subOrder[] = $this->data['order_id'];
+                // 订单商品列表
+                $goodsList = [];
+                // 更新商品库存 (下单减库存)
+                $deductStockData = [];
+                foreach($goods['goods_list'] as $g) {
+                    /* @var Goods $goods */
+                    $goodsList[] = [
+                        'user_id' => $user_id,
+                        'wxapp_id' => self::$wxapp_id,
+                        'goods_id' => $g['goods_id'],
+                        'goods_name' => $g['goods_name'],
+                        'image_id' => $g['image'][0]['image_id'],
+                        'deduct_stock_type' => $g['deduct_stock_type'],
+                        'spec_type' => $g['spec_type'],
+                        'spec_sku_id' => $g['goods_sku']['spec_sku_id'],
+                        'goods_spec_id' => $g['goods_sku']['goods_spec_id'],
+                        'goods_attr' => $g['goods_sku']['goods_attr'],
+                        'content' => $g['content'],
+                        'goods_no' => $g['goods_sku']['goods_no'],
+                        'goods_price' => $g['goods_sku']['goods_price'],
+                        'line_price' => $g['goods_sku']['line_price'],
+                        'goods_weight' => $g['goods_sku']['goods_weight'],
+                        'total_num' => $g['total_num'],
+                        'total_price' => $g['total_price'],
+                    ];
+                    // 下单减库存
+                    $g['deduct_stock_type'] == 10 && $deductStockData[] = [
+                        'goods_spec_id' => $g['goods_sku']['goods_spec_id'],
+                        'stock_num' => ['dec', $g['total_num']]
+                    ];
+                }
+                // 保存订单商品信息
+                $this->goods()->saveAll($goodsList);
+                // 更新商品库存
+                !empty($deductStockData) && (new GoodsSpec)->isUpdate()->saveAll($deductStockData);
+                // 记录收货地址
+                $this->address()->save([
+                    'user_id' => $user_id,
+                    'wxapp_id' => self::$wxapp_id,
+                    'name' => $order['address']['name'],
+                    'phone' => $order['address']['phone'],
+                    'province_id' => $order['address']['province_id'],
+                    'city_id' => $order['address']['city_id'],
+                    'region_id' => $order['address']['region_id'],
+                    'detail' => $order['address']['detail'],
+                ]);
+                $this->pk = NULL;
+                $this->data = [];
+                $this->origin = [];
+                $this->isUpdate = false;
+            }
+            $orderNo = $this->orderNo();
+            $this->save([
+                'user_id' => $user_id,
+                'wxapp_id' => self::$wxapp_id,
+                'order_no' => $orderNo,
+                'total_price' => $order['order_total_price'],
+                'pay_price' => $order['order_pay_price'],
+                'express_price' => $order['express_price'],
+                'suborder' => implode('-', $subOrder),
+            ]);
+            Db::commit();
         }
-        // 保存订单商品信息
-        $this->goods()->saveAll($goodsList);
-        // 更新商品库存
-        !empty($deductStockData) && (new GoodsSpec)->isUpdate()->saveAll($deductStockData);
-        // 记录收货地址
-        $this->address()->save([
-            'user_id' => $user_id,
-            'wxapp_id' => self::$wxapp_id,
-            'name' => $order['address']['name'],
-            'phone' => $order['address']['phone'],
-            'province_id' => $order['address']['province_id'],
-            'city_id' => $order['address']['city_id'],
-            'region_id' => $order['address']['region_id'],
-            'detail' => $order['address']['detail'],
-        ]);
-        Db::commit();
         return true;
     }
 
