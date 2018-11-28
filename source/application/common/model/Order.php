@@ -114,4 +114,9 @@ class Order extends BaseModel
         return self::get($order_id, ['goods.image', 'address']);
     }
 
+    public static function getSubOrder($order_id)
+    {
+        return self::all(['pid'=>$order_id], ['goods.image', 'address']);
+    }
+
 }

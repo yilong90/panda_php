@@ -102,7 +102,8 @@ class Order extends Controller
     public function detail($order_id)
     {
         $detail = OrderModel::detail($order_id);
-        return $this->fetch('detail', compact('detail'));
+        $subOrder = OrderModel::getSubOrder($order_id);
+        return $this->fetch('detail', compact('detail', 'subOrder'));
     }
 
     /**
@@ -115,10 +116,28 @@ class Order extends Controller
     {
         $model = OrderModel::detail($order_id);
         if ($model->delivery($this->postData('order'))) {
+            if($model['pid'] != 0)
+                $this->parentOrderDelivery($model['pid']);
             return $this->renderSuccess('发货成功');
         }
         $error = $model->getError() ?: '发货失败';
         return $this->renderError($error);
+    }
+
+    //修改总订单的状态
+    private function parentOrderDelivery($pid) {
+        $res = OrderModel::all(['pid'=>$pid]);
+        $delivary_status = true;
+        foreach($res as $v) {
+            if($v['delivery_status']['value'] == 10) {
+                $delivary_status = false;
+            }
+        }
+
+        if($delivary_status) {
+            $model = OrderModel::detail($pid);
+            $model->delivery(['express_company'=>'', 'express_no'=>'']);
+        }
     }
 
     public function edit_address($order_address_id)

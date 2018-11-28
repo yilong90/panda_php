@@ -179,6 +179,18 @@ class Order extends OrderModel
                 'pay_price' => $order['order_pay_price'],
                 'express_price' => $order['express_price'],
             ]);
+
+            // 记录收货地址
+            $this->address()->save([
+                'user_id' => $user_id,
+                'wxapp_id' => self::$wxapp_id,
+                'name' => $order['address']['name'],
+                'phone' => $order['address']['phone'],
+                'province_id' => $order['address']['province_id'],
+                'city_id' => $order['address']['city_id'],
+                'region_id' => $order['address']['region_id'],
+                'detail' => $order['address']['detail'],
+            ]);
             $pid = $this->data['order_id'];
             foreach ($order['goods_list'] as $goods) {
                 $this->pk = NULL;
@@ -192,7 +204,7 @@ class Order extends OrderModel
                     'order_no' => $subOrderNo,
                     'total_price' => $goods['total_price'],
                     'express_price' => $order['express_price'],
-                    'path' => $pid
+                    'pid' => $pid
                 ]);
                 // 订单商品列表
                 $goodsList = [];
@@ -229,17 +241,6 @@ class Order extends OrderModel
                 $this->goods()->saveAll($goodsList);
                 // 更新商品库存
                 !empty($deductStockData) && (new GoodsSpec)->isUpdate()->saveAll($deductStockData);
-                // 记录收货地址
-                $this->address()->save([
-                    'user_id' => $user_id,
-                    'wxapp_id' => self::$wxapp_id,
-                    'name' => $order['address']['name'],
-                    'phone' => $order['address']['phone'],
-                    'province_id' => $order['address']['province_id'],
-                    'city_id' => $order['address']['city_id'],
-                    'region_id' => $order['address']['region_id'],
-                    'detail' => $order['address']['detail'],
-                ]);
             }
             Db::commit();
         }
