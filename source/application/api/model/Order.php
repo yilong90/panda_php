@@ -203,7 +203,7 @@ class Order extends OrderModel
                     'wxapp_id' => self::$wxapp_id,
                     'order_no' => $subOrderNo,
                     'total_price' => $goods['total_price'],
-                    'express_price' => $order['express_price'],
+                    'express_price' => $goods['express_price'],
                     'pid' => $pid
                 ]);
                 // 订单商品列表
