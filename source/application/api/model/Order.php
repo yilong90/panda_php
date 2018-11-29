@@ -277,12 +277,27 @@ class Order extends OrderModel
                 $filter['receipt_status'] = 10;
                 break;
         }
-        return $this->with(['goods.image'])
+
+        $res = $this->with(['goods.image'])
             ->where('user_id', '=', $user_id)
+            ->where('pid', '=', 0)
             ->where('order_status', '<>', 20)
             ->where($filter)
             ->order(['create_time' => 'desc'])
-            ->select();
+            ->select()->toArray();
+
+        $subres = [];
+        foreach($res as $k=>$v) {
+            $subOrder = Order::getSubOrder($v['order_id'])->toArray();
+            if($subOrder) {
+                foreach($subOrder as $sub) {
+                    foreach($sub['goods'] as $g)
+                        $subres[] = $g;
+                }
+                $res[$k]['goods'] = $subres;
+            }
+        }
+        return $res;
     }
 
     /**
