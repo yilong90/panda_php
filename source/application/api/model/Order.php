@@ -286,15 +286,21 @@ class Order extends OrderModel
             ->order(['create_time' => 'desc'])
             ->select()->toArray();
 
-        $subres = [];
         foreach($res as $k=>$v) {
+            $subres = [];
             $subOrder = Order::getSubOrder($v['order_id'])->toArray();
             if($subOrder) {
+                $total_num = 0;
                 foreach($subOrder as $sub) {
-                    foreach($sub['goods'] as $g)
+                    foreach($sub['goods'] as $g) {
                         $subres[] = $g;
+                        $total_num += $g['total_num'];
+                    }
                 }
                 $res[$k]['goods'] = $subres;
+                $res[$k]['total_num'] = $total_num;
+            } else{
+                $res[$k]['total_num'] = array_sum(array_column($v['goods'], 'total_num'));
             }
         }
         return $res;
@@ -403,10 +409,15 @@ class Order extends OrderModel
             throw new BaseException(['msg' => '订单不存在']);
         }
 
-        $subOrder = OrderModel::getSubOrder($order_id);
-        if(!$subOrder->isEmpty()) {
-            foreach($subOrder as $sub)
-            $order['goods'][] = $sub['goods'];
+        $subOrder = OrderModel::getSubOrder($order_id)->toArray();
+        if($subOrder) {
+            foreach($subOrder as $sub) {
+                $subRes = [];
+                $subRes['goods'] = $sub['goods'];
+                $subRes['total_num'] = array_sum(array_column($sub['goods'], 'total_num'));
+                $subRes['total_price'] = $sub['total_price'];
+                $order['goods'][] = $subRes;
+            }
         } else {
             $order['goods'] = [$order['goods']];
         }
