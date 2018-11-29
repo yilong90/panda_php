@@ -380,6 +380,7 @@ class Order extends OrderModel
         }
         return $this->where('user_id', '=', $user_id)
             ->where('order_status', '<>', 20)
+            ->where('pid', '=', 0)
             ->where($filter)
             ->count();
     }
