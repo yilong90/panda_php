@@ -151,7 +151,7 @@ class Goods extends BaseModel
      * @return \think\Paginator
      * @throws \think\exception\DbException
      */
-    public function getList($status = null, $category_id = 0, $search = '', $sortType = 'all', $sortPrice = false)
+    public function getList($status = null, $category_id = 0, $search = '', $sortType = 'all', $sortPrice = false, $level_id='')
     {
         // 筛选条件
         $filter = [];
@@ -187,6 +187,15 @@ class Goods extends BaseModel
             ->paginate(15, false, [
                 'query' => Request::instance()->request()
             ]);
+
+        if($level_id) {
+            foreach($list  as $v) {
+                foreach($v['spec'] as $s) {
+                    $price = GoodsPrice::get(['goods_spec_id'=>$s['goods_spec_id'], 'level_id'=>$level_id]);
+                    $s['goods_price'] = $price['goods_price'];
+                }
+            }
+        }
         return $list;
     }
 
