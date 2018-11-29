@@ -407,6 +407,8 @@ class Order extends OrderModel
         if(!$subOrder->isEmpty()) {
             foreach($subOrder as $sub)
             $order['goods'][] = $sub['goods'];
+        } else {
+            $order['goods'] = [$order['goods']];
         }
         return $order;
     }
